@@ -1,0 +1,4 @@
+service vendor.nfc-a3y17lte /vendor/bin/hw/android.hardware.nfc-service.a3y17lte
+    class hal
+    user nfc
+    group nfc
