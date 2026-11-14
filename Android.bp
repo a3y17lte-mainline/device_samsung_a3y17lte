@@ -1,2 +1,12 @@
 soong_namespace {
 }
+
+// Template the supplicant copies to /data/vendor/wifi/wpa on first start
+// (AOSP's wpa_supplicant.conf module is gone; the template is a genrule now).
+prebuilt_etc {
+    name: "wpa_supplicant_a3y17lte.conf",
+    filename: "wpa_supplicant.conf",
+    src: ":wpa_supplicant_conf_gen",
+    sub_dir: "wifi",
+    vendor: true,
+}

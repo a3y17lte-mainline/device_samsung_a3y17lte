@@ -28,3 +28,15 @@ android17-6.18) with open-source HALs only: our Mesa Panfrost (external_mesa), m
   reported as CPU, GPU and the SKIN sensor ThermalManagerService uses; battery-thermal as BATTERY.
   The kernel throttles by itself (soc-thermal trips); the HAL reports and notifies (5 s polling,
   1 s once a sensor is above NONE).
+
+## Building (bring-up)
+
+```
+export WITH_ADB_INSECURE=true   # LineageOS userdebug: ro.debuggable=1, adb without RSA prompt
+breakfast a3y17lte
+m recoveryimage                 # first test; then: m bacon
+```
+
+Without `WITH_ADB_INSECURE`, LineageOS userdebug builds set `ro.debuggable=0`: init then
+ignores `androidboot.selinux=permissive` (the policy is not complete yet) and adb needs an
+RSA confirmation on the screen.

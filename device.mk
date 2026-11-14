@@ -17,7 +17,10 @@ $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 # Dynamic partitions on SYSTEM (non-A/B)
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
 PRODUCT_BUILD_SUPER_PARTITION := true
-PRODUCT_SHIPPING_API_LEVEL := 37
+# The A320F launched with Android 6.0. A launch level >= 29 would also make check_vintf enforce
+# Android 17's kernel config requirements at build time; four are unmet on purpose (see the
+# kernel's a3y17lte_defconfig notes: ASHMEM, NF_CT_PROTO_DCCP, SCHED_DEBUG, CFI_CLANG).
+PRODUCT_SHIPPING_API_LEVEL := 23
 
 # Screen: 720x1280, 4.7"
 TARGET_SCREEN_HEIGHT := 1280
@@ -118,12 +121,11 @@ PRODUCT_PACKAGES += \
     android.hardware.usb-service.example \
     android.hardware.vibrator-service.a3y17lte
 
-# Wi-Fi (ath10k_sdio, nl80211)
+# Wi-Fi (ath10k_sdio, nl80211): HAL-less, see BoardConfig.mk
 PRODUCT_PACKAGES += \
-    android.hardware.wifi-service \
     hostapd \
     wpa_supplicant \
-    wpa_supplicant.conf
+    wpa_supplicant_a3y17lte.conf
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml \
     frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml

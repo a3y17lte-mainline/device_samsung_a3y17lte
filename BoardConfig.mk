@@ -100,14 +100,15 @@ BOARD_MESA3D_VULKAN_DRIVERS :=
 # build host builds them natively from external/mesa (android-host-arm64 setup.sh).
 BOARD_MESA3D_MESON_ARGS := -Dmesa-clc=system -Dprecomp-compiler=system
 
-# Wi-Fi: QCA9377 on mainline ath10k_sdio (nl80211)
-BOARD_WLAN_DEVICE := default
+# Wi-Fi: QCA9377 on mainline ath10k_sdio (nl80211). No vendor Wi-Fi HAL: libwifi-hal has no
+# backend for a plain nl80211 driver (its fallback fails init), so the framework runs HAL-less
+# (wificond + wpa_supplicant/hostapd). No driver_cmd private lib: nothing to send private
+# commands to.
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
 BOARD_HOSTAPD_DRIVER := NL80211
-BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_default
-BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_default
 WPA_SUPPLICANT_VERSION := VER_0_8_X
-WIFI_HIDL_FEATURE_DUAL_INTERFACE := false
+# wpa_supplicant installs its own service (android.hardware.wifi.supplicant-service.rc)
+WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
 
 # Bluetooth: hci_qca in the kernel, HCI user channel from userspace
 BOARD_HAVE_BLUETOOTH := true
