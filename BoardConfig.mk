@@ -28,12 +28,14 @@ TARGET_KERNEL_ARCH := arm64
 BOARD_KERNEL_IMAGE_NAME := Image
 
 # Boot image: S-Boot loads it directly. Header v0, page 2048, raw Image (S-Boot cannot
-# decompress), gzip ramdisk with an appended bootconfig, DTBH dt.img. S-Boot ignores the
+# decompress), xz ramdisk with an appended bootconfig, DTBH dt.img. S-Boot ignores the
 # load addresses; these are the stock values.
+# S-Boot refuses a ramdisk over 14 MiB ("Invalid RAMDISK LENGTH"): the recovery ramdisk is
+# 15.1 MB as gzip and 8.9 MB as xz (the kernel has RD_XZ).
 BOARD_KERNEL_BASE := 0x10000000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_BOOT_HEADER_VERSION := 0
-BOARD_RAMDISK_USE_LZ4 := false
+BOARD_RAMDISK_USE_XZ := true
 BOARD_CUSTOM_BOOTIMG_MK := $(DEVICE_PATH)/bootimg.mk
 BOARD_A3_BOOTCONFIG := $(DEVICE_PATH)/bootconfig.txt
 # Recovery: display, USB gadget and gpio-keys are built in; touch screen and touch keys are

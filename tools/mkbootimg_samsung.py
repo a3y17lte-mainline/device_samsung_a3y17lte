@@ -19,6 +19,9 @@ HDR = struct.Struct("<8s10I16s512s32s1024s")   # magic .. extra_cmdline (v0 layo
 BOOTCONFIG_MAGIC = b"#BOOTCONFIG\n"
 
 
+SBOOT_MAX_RAMDISK = 0xe00000
+SBOOT_MAX_TOTAL = 0x3d7ff00
+
 def pad(b, page):
     return b + b"\0" * ((-len(b)) % page)
 
@@ -124,6 +127,14 @@ def pack(a):
     dt = open(a.dt, "rb").read() if a.dt else b""
     if a.dtb:
         dt = dtbh(a.dtb, a.pagesize)
+    # S-Boot's checks before it boots an image (from its code, A320FLXXS9CTK2), on the
+    # page-aligned sizes: ramdisk <= 14 MiB ("Invalid RAMDISK LENGTH"), and
+    # kernel + ramdisk + dt + 0x1000 <= 0x3d7ff00 ("Invalid KERNEL LENGTH" / "DT LENGTH").
+    if len(pad(ramdisk, a.pagesize)) > SBOOT_MAX_RAMDISK:
+        sys.exit(f"ramdisk is {len(ramdisk)} bytes: S-Boot refuses more than "
+                 f"{SBOOT_MAX_RAMDISK} (use a stronger compression)")
+    if sum(len(pad(x, a.pagesize)) for x in (kernel, ramdisk, dt)) + 0x1000 > SBOOT_MAX_TOTAL:
+        sys.exit(f"kernel + ramdisk + dt exceed S-Boot's limit of {SBOOT_MAX_TOTAL} bytes")
     cmdline = a.cmdline.encode()
     if len(cmdline) > 512 + 1024 - 2:
         sys.exit("cmdline too long")
