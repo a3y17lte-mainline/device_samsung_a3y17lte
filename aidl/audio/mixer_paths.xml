@@ -7,9 +7,8 @@
         TFA9896 ("Speaker" prefix): loudspeaker, plays the left channel
     Capture: codec ADC -> mixer -> AP ("AP Capture Source" = Codec).
 
-    "Speaker Switch" needs a pin switch on the card (the TFA9896 has no switch of its own):
-    until the kernel has it, libaudioroute skips that control and the loudspeaker plays
-    whenever anything plays.
+    "Speaker Switch" is a pin switch of the card (pin-switches in the board DT): the TFA9896
+    has no switch of its own.
 -->
 <mixer>
     <!-- Initial state, and what audio_route_reset returns to -->
