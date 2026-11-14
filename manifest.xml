@@ -1,0 +1,6 @@
+<!--
+    Device manifest. The AIDL HALs install their own VINTF fragments; this only sets the
+    target FCM level. VERIFY the level against LineageOS 24.0 (Android 17).
+-->
+<manifest version="1.0" type="device" target-level="202604">
+</manifest>

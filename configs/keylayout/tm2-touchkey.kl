@@ -1,0 +1,3 @@
+# ABOV A96T316 capacitive keys (tm2-touchkey driver): left = KEY_APPSELECT, right = KEY_BACK
+key 580   APP_SWITCH        VIRTUAL
+key 158   BACK              VIRTUAL

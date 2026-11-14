@@ -1,0 +1,5 @@
+# gpio-keys (exynos7870-a3y17lte.dts): Linux key codes
+key 114   VOLUME_DOWN
+key 115   VOLUME_UP
+key 116   POWER
+key 172   HOME

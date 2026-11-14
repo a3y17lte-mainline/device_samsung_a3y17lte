@@ -1,0 +1,15 @@
+# Appended to the boot/recovery ramdisk (kernel CONFIG_BOOT_CONFIG_FORCE), because S-Boot
+# writes its own /chosen/bootargs. S-Boot's androidboot.* (hardware=samsungexynos7870,
+# serialno, bootloader, ...) still arrive on the cmdline.
+
+androidboot.super_partition = SYSTEM
+androidboot.boot_devices = 13540000.mmc
+androidboot.selinux = permissive
+androidboot.console = ttySAC2
+
+# Kernel parameters (not early params: those cannot come from bootconfig).
+# clk/pd_ignore_unused stay until the clock/power-domain users are complete.
+kernel.s3c2410_wdt.tmr_atboot = 1
+kernel.clk_ignore_unused
+kernel.pd_ignore_unused
+kernel.loglevel = 7

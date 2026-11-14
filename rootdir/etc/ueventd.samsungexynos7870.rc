@@ -1,0 +1,21 @@
+# Firmware: /vendor/firmware (ath10k, qca BT, touch keys, sensor hub)
+firmware_directories /vendor/firmware/
+
+# GPU (Panfrost) and display
+/dev/dri/*                0666   system     graphics
+
+# Sensor hub, IIO
+/dev/iio:device*          0660   system     system
+/sys/bus/iio/devices/iio:device*  scan_elements/*      0660 system system
+/sys/bus/iio/devices/iio:device*  buffer/*             0660 system system
+/sys/bus/iio/devices/iio:device*  sampling_frequency   0660 system system
+
+# Bluetooth UART is owned by hci_qca in the kernel: nothing here
+
+# NFC (s3fwrn5 via the kernel NCI stack): no device node
+
+# RTC
+/dev/rtc0                 0660   system     system
+
+# Vibrator / input
+/dev/input/event*         0660   system     input

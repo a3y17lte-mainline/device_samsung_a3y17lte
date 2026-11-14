@@ -1,0 +1,12 @@
+# Firmware for vendor/samsung/a3y17lte. Format: source:destination|sha256
+# source is relative to the firmware directory given to extract-files.sh (the project's
+# work/firmware, see its README); destination is relative to the vendor partition.
+# Nothing else is proprietary: all HALs are open source.
+
+# Wi-Fi (QCA9377, ath10k_sdio): linux-firmware SDIO firmware + this board's calibration data
+linux-firmware/ath10k/QCA9377/hw1.0/firmware-sdio-5.bin:firmware/ath10k/QCA9377/hw1.0/firmware-sdio-5.bin|017b4ae7bdb5821ecb439fbf96d198421a57926918f2513db5fbd6d9c01debe6
+system/bdwlan30.bin:firmware/ath10k/QCA9377/hw1.0/board.bin|53a40ab6015a5aade2305271aab2ecbdcfb8b95cc6ec67b47c3d650871bec737
+
+# Bluetooth (QCA9377 UART, hci_qca): controller version 0x00230302, stock TF 1.1 pair
+system/rampatch_tlv_tf_1.1.tlv:firmware/qca/rampatch_00230302.bin|f632390a60fdec1e2c65422237fada1fe375940057a1c059eb683de23ae84fc4
+system/nvm_tlv_tf_1.1.bin:firmware/qca/nvm_00230302.bin|4ef3e40deb40446345c6780d13670b17b471442951fd5964db73e9fbeceb035f

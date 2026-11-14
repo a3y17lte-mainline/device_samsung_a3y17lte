@@ -1,0 +1,36 @@
+import /vendor/etc/init/hw/init.samsungexynos7870.usb.rc
+
+on early-init
+    # Kernel modules from /vendor/lib/modules (modules.load order)
+    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules --all=/vendor/lib/modules/modules.load
+    setprop ro.vendor.modules.loaded 1
+
+on init
+    # 8x Cortex-A53 in two clusters of 4
+    write /sys/devices/system/cpu/cpufreq/policy0/scaling_governor schedutil
+    write /sys/devices/system/cpu/cpufreq/policy4/scaling_governor schedutil
+
+    # zram
+    write /sys/block/zram0/comp_algorithm lz4
+
+on fs
+    mount_all /vendor/etc/fstab.samsungexynos7870 --early
+    swapon_all /vendor/etc/fstab.samsungexynos7870
+
+on late-fs
+    mount_all /vendor/etc/fstab.samsungexynos7870 --late
+
+on post-fs-data
+    mkdir /data/vendor/wifi 0770 wifi wifi
+    mkdir /data/vendor/wifi/wpa 0770 wifi wifi
+    mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
+
+on boot
+    # TODO: Wi-Fi/BT addresses. Alpine uses made-up ones (wlan0 02:a3:17:00:00:02,
+    # hci0 02:A3:17:00:00:01; the real ones are in EFS, which is not used). Without an address
+    # hci0 stays unconfigured: the Bluetooth HAL must set it (HCI vendor command / mgmt).
+
+    # Backlight and touch-key LEDs for the lights HAL
+    chown system system /sys/class/backlight/14800000.dsi.0/brightness
+    chown system system /sys/class/leds/tm2-touchkey/brightness
+    chown system system /sys/class/leds/white:flash/brightness

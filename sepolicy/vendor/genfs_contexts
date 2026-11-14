@@ -1,0 +1,2 @@
+# Display backlight and LEDs (lights HAL)
+genfscon sysfs /devices/platform/14800000.dsi/backlight u:object_r:sysfs_leds:s0
