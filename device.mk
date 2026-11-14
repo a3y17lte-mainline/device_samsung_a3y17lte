@@ -67,13 +67,20 @@ PRODUCT_COPY_FILES += \
     $(DEVICE_PATH)/configs/keylayout/tm2-touchkey.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/tm2-touchkey.kl \
     $(DEVICE_PATH)/configs/idc/Imagis_capacitive_touchscreen.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/Imagis_capacitive_touchscreen.idc
 
-# Graphics: drm_hwcomposer (HWC3, in AOSP). Mesa Panfrost (GLES 3.1, no Vulkan on Midgard)
-# and the gralloc allocator/mapper need our own integration: AOSP 17's external/mesa3d builds
-# only gfxstream, and AOSP minigbm has no backend for Exynos DRM + Panfrost. TODO.
+# Graphics: our Mesa (external/mesa: Panfrost with our Midgard fixes, GLES 3.1, no Vulkan on
+# Midgard), minigbm (external/minigbm: our fork, dumb buffers on the Exynos DRM render node,
+# imported by Panfrost through dma-buf) and drm_hwcomposer (HWC3).
 PRODUCT_PACKAGES += \
+    libEGL_mesa \
+    libGLESv1_CM_mesa \
+    libGLESv2_mesa \
+    libgallium_dri \
+    android.hardware.graphics.allocator-service.minigbm \
+    mapper.minigbm \
     android.hardware.composer.hwc3-service.drm
 PRODUCT_VENDOR_PROPERTIES += \
     ro.hardware.egl=mesa \
+    drm.gpu.vendor_name=panfrost \
     ro.opengles.version=196609 \
     debug.renderengine.backend=skiaglthreaded \
     debug.hwui.renderer=skiagl

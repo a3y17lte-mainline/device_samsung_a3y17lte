@@ -85,10 +85,16 @@ BOARD_AVB_ENABLE := false
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.samsungexynos7870
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 
-# Display / graphics: Exynos DRM + Mesa Panfrost (GLES 3.1, no Vulkan on Midgard),
-# drm_hwcomposer (HWC3). AOSP 17's external/mesa3d only builds gfxstream and its minigbm has no
-# Exynos/Panfrost backend: Mesa + a gralloc come from our own integration (open, see README).
+# Display / graphics: Exynos DRM + our Mesa (external/mesa, upstream's meson-based Android.mk)
+# with Panfrost only: GLES 3.1, no Vulkan (panvk does not support Midgard), no libgbm (neither
+# minigbm nor drm_hwcomposer needs it).
 TARGET_SCREEN_DENSITY := 320
+BOARD_MESA3D_USES_MESON_BUILD := true
+BOARD_MESA3D_GALLIUM_DRIVERS := panfrost
+BOARD_MESA3D_VULKAN_DRIVERS :=
+# Panfrost precompiles its CL kernels with mesa_clc/panfrost_compile, which need LLVM: the
+# build host builds them natively from external/mesa (android-host-arm64 setup.sh).
+BOARD_MESA3D_MESON_ARGS := -Dmesa-clc=system -Dprecomp-compiler=system
 
 # Wi-Fi: QCA9377 on mainline ath10k_sdio (nl80211)
 BOARD_WLAN_DEVICE := default
