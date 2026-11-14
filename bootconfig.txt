@@ -3,7 +3,7 @@
 # serialno, bootloader, ...) still arrive on the cmdline.
 
 androidboot.super_partition = SYSTEM
-androidboot.boot_devices = 13540000.mmc
+androidboot.boot_devices = soc@0/13540000.mmc
 androidboot.selinux = permissive
 androidboot.console = ttySAC2
 

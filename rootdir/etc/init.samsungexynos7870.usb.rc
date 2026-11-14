@@ -1,4 +1,4 @@
-# USB gadget (configfs) on the DWC3 at 13600000. VERIFY the UDC name (/sys/class/udc).
+# USB gadget (configfs) on the DWC3 at 13600000 (UDC name checked on the phone).
 # No gadget HAL: with sys.usb.configfs=1, AOSP's init.usb.configfs.rc links the functions for
 # sys.usb.config (adb, mtp, ptp, rndis/ncm) and writes ${sys.usb.controller} to the UDC.
 

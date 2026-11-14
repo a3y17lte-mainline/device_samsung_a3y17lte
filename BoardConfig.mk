@@ -34,9 +34,13 @@ BOARD_KERNEL_BASE := 0x10000000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_BOOT_HEADER_VERSION := 0
 BOARD_RAMDISK_USE_LZ4 := false
-BOARD_KERNEL_SEPARATED_DT := true
 BOARD_CUSTOM_BOOTIMG_MK := $(DEVICE_PATH)/bootimg.mk
 BOARD_A3_BOOTCONFIG := $(DEVICE_PATH)/bootconfig.txt
+# Recovery: display, USB gadget and gpio-keys are built in; touch screen and touch keys are
+# modules (loaded from modules.load.recovery).
+RECOVERY_KERNEL_MODULES := imagis.ko tm2-touchkey.ko
+BOARD_RECOVERY_KERNEL_MODULES_LOAD := $(RECOVERY_KERNEL_MODULES)
+TARGET_AUTO_COLLECT_KERNEL_MODULE_DEPS := true
 # S-Boot replaces the cmdline with its own (androidboot.hardware=samsungexynos7870 etc.);
 # our parameters travel in the bootconfig instead.
 BOARD_KERNEL_CMDLINE :=

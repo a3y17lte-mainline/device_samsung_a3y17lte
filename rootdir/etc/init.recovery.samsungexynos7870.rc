@@ -1,5 +1,5 @@
 # Recovery: USB gadget for adb (recovery's own init.rc writes the functions and the UDC
-# from sys.usb.config / sys.usb.controller). VERIFY the UDC name (/sys/class/udc).
+# from sys.usb.config / sys.usb.controller). UDC name checked on the phone (/sys/class/udc).
 on init
     setprop sys.usb.configfs 1
     setprop sys.usb.controller "13600000.usb"
