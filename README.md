@@ -3,7 +3,7 @@
 LineageOS 24.0 (Android 17) device tree for the Samsung Galaxy A3 (2017), SM-A320F (Exynos 7870),
 on a mainline-based kernel ([kernel_samsung_exynos7870](https://github.com/a3y17lte-mainline/kernel_samsung_exynos7870),
 android17-6.18) with open-source HALs only: our Mesa Panfrost (external_mesa), minigbm with an Exynos DRM backend
-(external_minigbm), drm_hwcomposer, and our own vibrator and thermal HALs (`aidl/`).
+(external_minigbm), drm_hwcomposer, and our own HALs (`aidl/`): vibrator, thermal, power, sensors, audio, NFC.
 
 **Preliminary**: written before the first build and the first boot.
 
@@ -28,6 +28,17 @@ android17-6.18) with open-source HALs only: our Mesa Panfrost (external_mesa), m
   reported as CPU, GPU and the SKIN sensor ThermalManagerService uses; battery-thermal as BATTERY.
   The kernel throttles by itself (soc-thermal trips); the HAL reports and notifies (5 s polling,
   1 s once a sensor is above NONE).
+- `aidl/power`: IPower V7 through the cpufreq policy limits: interaction boost (minimum 1014 MHz
+  for the given time), launch (highest frequency, 5 s at the longest), battery saver (maximum
+  1014 MHz). No hint sessions.
+- `aidl/sensors`: ISensors V3 on the sensor hub's IIO devices (kernel ssp_sensors): accelerometer,
+  gyroscope, magnetometer, barometer, light, and proximity as a wake-up sensor from IIO events.
+  `Sensors.*` is AOSP's default service; `Sensor.*` reads the devices.
+- `aidl/audio-effect`: AOSP's effects service (two source files copied, it only builds for an
+  APEX there) with AOSP's software effects.
+- `aidl/nfc`: INfc V2 for the S3NRN80, a pass-through to the kernel's raw NCI device
+  `/dev/s3fwrn5` (an ANDROID: kernel patch). Sends the chip its clock configuration at every
+  power-up. Reader mode and host card emulation; the chip's firmware is never written.
 
 ## Building (bring-up)
 
