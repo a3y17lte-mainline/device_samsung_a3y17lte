@@ -1,2 +1,12 @@
-# Display backlight and LEDs (lights HAL)
-genfscon sysfs /devices/platform/14800000.dsi/backlight u:object_r:sysfs_leds:s0
+# Platform devices live under /devices/platform/soc@0 (exynos7870.dtsi).
+# Battery: fuel gauge + USB-C controller on i2c0, charger + MUIC on i2c4. Prefix matches cover
+# the whole bus subtree; tighten once the exact power_supply paths are known.
+genfscon sysfs /devices/platform/soc@0/13830000.i2c       u:object_r:sysfs_batteryinfo:s0
+genfscon sysfs /devices/platform/soc@0/13870000.i2c       u:object_r:sysfs_batteryinfo:s0
+
+# Display backlight (DSIM child) and LEDs: touch keys (i2c-gpio bus), RT8547 flash
+genfscon sysfs /devices/platform/soc@0/14800000.dsi       u:object_r:sysfs_a3_backlight:s0
+genfscon sysfs /devices/platform/i2c-touchkey             u:object_r:sysfs_a3_leds:s0
+genfscon sysfs /devices/platform/led-controller           u:object_r:sysfs_a3_leds:s0
+
+# Thermal zones, cpufreq: covered by the platform policy (sysfs_thermal, sysfs_devices_system_cpu)

@@ -1,0 +1,4 @@
+runtime_resource_overlay {
+    name: "FrameworksResA3y17lte",
+    vendor: true,
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Physical keys: Home (gpio-keys), Back + Recents (capacitive, tm2-touchkey).
+         Bits: home 1, back 2, menu 4, assist 8, app switch 16. -->
+    <integer name="config_deviceHardwareKeys">19</integer>
+    <integer name="config_deviceHardwareWakeKeys">1</integer>
+    <bool name="config_showNavigationBar">false</bool>
+
+    <!-- Flip cover hall sensor (SW_LID) -->
+    <bool name="config_lidControlsSleep">true</bool>
+    <bool name="config_lidControlsScreenLock">false</bool>
+
+    <!-- No light sensor HAL yet (the sensor hub light channel comes with the IIO sensors HAL) -->
+    <bool name="config_automatic_brightness_available">false</bool>
+
+    <!-- Backlight 0-255; levels below ~2 look black on this AMOLED -->
+    <integer name="config_screenBrightnessSettingMinimum">2</integer>
+    <integer name="config_screenBrightnessSettingMaximum">255</integer>
+    <integer name="config_screenBrightnessSettingDefault">128</integer>
+
+    <!-- AMOLED: no burn-in protection yet, ambient display off -->
+    <bool name="config_dozeAlwaysOnDisplayAvailable">false</bool>
+
+    <!-- Torch: RT8547 via the flash LED class device (needs a lights/torch path; camera HAL absent) -->
+
+    <!-- 2 GB RAM -->
+    <bool name="config_lowRamTaskSnapshotsAndRecents">false</bool>
+    <bool name="config_supportsSplitScreenMultiWindow">true</bool>
+
+    <!-- No telephony hardware in use (modem out of scope) -->
+    <bool name="config_voice_capable">false</bool>
+    <bool name="config_sms_capable">false</bool>
+</resources>

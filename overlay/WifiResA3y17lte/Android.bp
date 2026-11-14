@@ -1,0 +1,4 @@
+runtime_resource_overlay {
+    name: "WifiResA3y17lte",
+    vendor: true,
+}

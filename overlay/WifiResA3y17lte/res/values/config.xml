@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- QCA9377 (ath10k_sdio): 2.4 + 5 GHz, 1x1 -->
+    <bool name="config_wifi5ghzSupport">true</bool>
+    <bool name="config_wifiSoftap5ghzSupported">true</bool>
+    <bool name="config_wifi_background_scan_support">false</bool>
+</resources>

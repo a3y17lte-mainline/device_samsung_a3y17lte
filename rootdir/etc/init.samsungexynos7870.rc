@@ -26,11 +26,23 @@ on post-fs-data
     mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
 
 on boot
-    # TODO: Wi-Fi/BT addresses. Alpine uses made-up ones (wlan0 02:a3:17:00:00:02,
-    # hci0 02:A3:17:00:00:01; the real ones are in EFS, which is not used). Without an address
-    # hci0 stays unconfigured: the Bluetooth HAL must set it (HCI vendor command / mgmt).
+    # Wi-Fi/BT addresses come from the DT (ANDROID: kernel commit: local-bd-address on the
+    # bluetooth node, mac-address on wifi@1), the same made-up ones as on Alpine
+    # (02:a3:17:00:00:02 / 02:A3:17:00:00:01; the real ones are in EFS, which is not used).
+    # Without an address hci0 stays unconfigured and the Bluetooth HAL never sees it.
 
     # Backlight and touch-key LEDs for the lights HAL
     chown system system /sys/class/backlight/14800000.dsi.0/brightness
     chown system system /sys/class/leds/tm2-touchkey/brightness
     chown system system /sys/class/leds/white:flash/brightness
+
+# Offline charging: S-Boot passes androidboot.mode=charger when a cable is plugged into a
+# powered-off phone, so init runs the "charger" trigger instead of a full boot. The charger
+# UI is the health HAL's --charger mode (VERIFY its service name in the health HAL rc).
+on charger
+    write /sys/devices/system/cpu/cpufreq/policy0/scaling_governor powersave
+    write /sys/devices/system/cpu/cpufreq/policy4/scaling_governor powersave
+    write /sys/devices/system/cpu/cpu4/online 0
+    write /sys/devices/system/cpu/cpu5/online 0
+    write /sys/devices/system/cpu/cpu6/online 0
+    write /sys/devices/system/cpu/cpu7/online 0
