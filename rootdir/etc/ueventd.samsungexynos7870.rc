@@ -1,3 +1,6 @@
+# Kernel modules (/vendor/lib/modules) load by modalias as devices appear
+modalias_handling enabled
+
 # Firmware: /vendor/firmware (ath10k, qca BT, touch keys, sensor hub)
 firmware_directories /vendor/firmware/
 

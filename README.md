@@ -7,8 +7,10 @@ android17-6.18) with open-source HALs only: Mesa Panfrost, minigbm, drm_hwcompos
 **Preliminary**: written before the first build and the first boot.
 
 - Boot: S-Boot loads `boot.img` directly (header v0, raw Image, DTBH dt.img, bootconfig
-  appended to the ramdisk): see `bootimg.mk`, `tools/mkbootimg_samsung.py`, `bootconfig.txt`.
+  appended to the ramdisk, Image header as S-Boot expects): see `bootimg.mk`, `tools/mkbootimg_samsung.py`, `bootconfig.txt`.
 - Storage, no repartitioning: super on the PIT partition SYSTEM (4000 MiB: system, system_ext,
   product, vendor as EROFS), /cache on CACHE, /metadata on HIDDEN, /data (f2fs, FBE) on USERDATA.
-- Kernel: `prebuilt/` (not in git) holds Image, dt.img and modules from the kernel repo's build.
+- Kernel: built from source by the LineageOS build (`TARGET_KERNEL_SOURCE` kernel/samsung/exynos7870,
+  `a3y17lte_defconfig`); dt.img is made from its DTB with hardware/samsung's dtbhtoolExynos.
+  Modules load by modalias (ueventd).
 - Firmware: `./extract-files.sh FIRMWARE_DIR` fills vendor/samsung/a3y17lte (4 files, sha256-pinned).

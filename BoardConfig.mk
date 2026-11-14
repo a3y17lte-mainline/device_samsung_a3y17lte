@@ -19,12 +19,13 @@ TARGET_BOOTLOADER_BOARD_NAME := universal7870
 TARGET_NO_BOOTLOADER := true
 TARGET_NO_RADIOIMAGE := true
 
-# Kernel: prebuilt from kernel_samsung_exynos7870 (tools/android/build-kernel installs
-# Image, dt.img and modules into prebuilt/). The LineageOS in-tree kernel build only
-# supports x86 hosts.
-TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/Image
-BOARD_KERNEL_IMAGE_NAME := Image
+# Kernel: built from source (kernel_samsung_exynos7870: android17-6.18 + the mainline
+# a3y17lte series). Raw Image: S-Boot cannot decompress. Modules go to /vendor/lib/modules
+# and are loaded by modalias (ueventd), like mdev does on the Alpine test system.
+TARGET_KERNEL_SOURCE := kernel/samsung/exynos7870
+TARGET_KERNEL_CONFIG := a3y17lte_defconfig
 TARGET_KERNEL_ARCH := arm64
+BOARD_KERNEL_IMAGE_NAME := Image
 
 # Boot image: S-Boot loads it directly. Header v0, page 2048, raw Image (S-Boot cannot
 # decompress), gzip ramdisk with an appended bootconfig, DTBH dt.img. S-Boot ignores the
@@ -35,7 +36,8 @@ BOARD_BOOT_HEADER_VERSION := 0
 BOARD_RAMDISK_USE_LZ4 := false
 BOARD_KERNEL_SEPARATED_DT := true
 BOARD_CUSTOM_BOOTIMG_MK := $(DEVICE_PATH)/bootimg.mk
-BOARD_A3_DT_IMAGE := $(DEVICE_PATH)/prebuilt/dt.img
+# DTBH table from the kernel-built DTB, by hardware/samsung's dtbhtool (model_info-* select it)
+TARGET_CUSTOM_DTBTOOL := dtbhtoolExynos
 BOARD_A3_BOOTCONFIG := $(DEVICE_PATH)/bootconfig.txt
 # S-Boot replaces the cmdline with its own (androidboot.hardware=samsungexynos7870 etc.);
 # our parameters travel in the bootconfig instead.
@@ -77,11 +79,6 @@ TARGET_COPY_OUT_ODM := vendor/odm
 
 # /metadata on the PIT partition HIDDEN (60 MiB): needs the user's yes before it is formatted.
 BOARD_USES_METADATA_PARTITION := true
-
-# Kernel modules: everything needed for first-stage mount (mmc, dm, erofs, f2fs) is built in;
-# the rest is loaded from /vendor/lib/modules.
-BOARD_VENDOR_KERNEL_MODULES := $(wildcard $(DEVICE_PATH)/prebuilt/modules/*.ko)
-BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/prebuilt/modules/modules.load 2>/dev/null))
 
 # No AVB: S-Boot does not know vbmeta.
 BOARD_AVB_ENABLE := false

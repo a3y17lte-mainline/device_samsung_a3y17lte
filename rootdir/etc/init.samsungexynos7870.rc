@@ -1,10 +1,5 @@
 import /vendor/etc/init/hw/init.samsungexynos7870.usb.rc
 
-on early-init
-    # Kernel modules from /vendor/lib/modules (modules.load order)
-    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules --all=/vendor/lib/modules/modules.load
-    setprop ro.vendor.modules.loaded 1
-
 on init
     # 8x Cortex-A53 in two clusters of 4
     write /sys/devices/system/cpu/cpufreq/policy0/scaling_governor schedutil

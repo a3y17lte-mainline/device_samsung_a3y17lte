@@ -32,8 +32,22 @@ def bootconfig(path):
     return data + struct.pack("<II", len(data), sum(data) & 0xffffffff) + BOOTCONFIG_MAGIC
 
 
+def sboot_image_header(kernel):
+    """arm64 Image header in the layout S-Boot is known to boot: text_offset 0x80000,
+    flags 0 (mainline writes 0 and LE/4K/anywhere flags). The kernel is relocatable and
+    does not read these fields itself."""
+    k = bytearray(kernel)
+    if k[0x38:0x3c] != b"ARMd":
+        sys.exit("kernel is not an arm64 Image")
+    struct.pack_into("<Q", k, 0x08, 0x80000)
+    struct.pack_into("<Q", k, 0x18, 0)
+    return bytes(k)
+
+
 def pack(a):
     kernel = open(a.kernel, "rb").read()
+    if a.sboot_image_header:
+        kernel = sboot_image_header(kernel)
     ramdisk = open(a.ramdisk, "rb").read() if a.ramdisk else b""
     if a.bootconfig:
         ramdisk += bootconfig(a.bootconfig)
@@ -99,6 +113,8 @@ def main():
     ap.add_argument("--dt")
     ap.add_argument("--bootconfig", help="key = value file appended to the ramdisk")
     ap.add_argument("--seandroid", action="store_true", help="append the SEANDROIDENFORCE trailer")
+    ap.add_argument("--sboot-image-header", action="store_true",
+                    help="set the arm64 Image header to text_offset 0x80000, flags 0")
     ap.add_argument("--cmdline", default="")
     ap.add_argument("--board", default="")
     ap.add_argument("--base", type=lambda x: int(x, 0), default=0x10000000)
