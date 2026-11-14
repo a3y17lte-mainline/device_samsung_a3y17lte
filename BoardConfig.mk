@@ -36,8 +36,6 @@ BOARD_BOOT_HEADER_VERSION := 0
 BOARD_RAMDISK_USE_LZ4 := false
 BOARD_KERNEL_SEPARATED_DT := true
 BOARD_CUSTOM_BOOTIMG_MK := $(DEVICE_PATH)/bootimg.mk
-# DTBH table from the kernel-built DTB, by hardware/samsung's dtbhtool (model_info-* select it)
-TARGET_CUSTOM_DTBTOOL := dtbhtoolExynos
 BOARD_A3_BOOTCONFIG := $(DEVICE_PATH)/bootconfig.txt
 # S-Boot replaces the cmdline with its own (androidboot.hardware=samsungexynos7870 etc.);
 # our parameters travel in the bootconfig instead.
@@ -88,13 +86,9 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.samsungexynos7870
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 
 # Display / graphics: Exynos DRM + Mesa Panfrost (GLES 3.1, no Vulkan on Midgard),
-# minigbm, drm_hwcomposer.
+# drm_hwcomposer (HWC3). AOSP 17's external/mesa3d only builds gfxstream and its minigbm has no
+# Exynos/Panfrost backend: Mesa + a gralloc come from our own integration (open, see README).
 TARGET_SCREEN_DENSITY := 320
-BOARD_GPU_DRIVERS := panfrost
-BOARD_MESA3D_USES_MESON_BUILD := true
-BOARD_MESA3D_GALLIUM_DRIVERS := panfrost
-BOARD_MESA3D_VULKAN_DRIVERS :=
-TARGET_USES_HWC2 := true
 
 # Wi-Fi: QCA9377 on mainline ath10k_sdio (nl80211)
 BOARD_WLAN_DEVICE := default

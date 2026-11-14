@@ -1,6 +1,6 @@
 # USB gadget (configfs) on the DWC3 at 13600000. VERIFY the UDC name (/sys/class/udc).
-# Functions: adb (FunctionFS), MTP, RNDIS/NCM for tethering, handled by the USB gadget HAL
-# (android.hardware.usb.gadget-service), which only needs the gadget skeleton below.
+# No gadget HAL: with sys.usb.configfs=1, AOSP's init.usb.configfs.rc links the functions for
+# sys.usb.config (adb, mtp, ptp, rndis/ncm) and writes ${sys.usb.controller} to the UDC.
 
 on early-boot
     mount configfs none /config
@@ -29,6 +29,6 @@ on early-boot
     mkdir /dev/usb-ffs/ptp 0770 mtp mtp
     mount functionfs mtp /dev/usb-ffs/mtp rmode=0770,fmode=0660,uid=1024,gid=1024,no_disconnect=1
     mount functionfs ptp /dev/usb-ffs/ptp rmode=0770,fmode=0660,uid=1024,gid=1024,no_disconnect=1
-    setprop sys.usb.configfs 2
+    setprop sys.usb.configfs 1
     setprop sys.usb.controller "13600000.usb"
     setprop vendor.usb.controller "13600000.usb"

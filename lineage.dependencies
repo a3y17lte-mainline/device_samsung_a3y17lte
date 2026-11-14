@@ -10,9 +10,5 @@
     "repository": "a3y17lte-mainline/vendor_samsung_a3y17lte",
     "target_path": "vendor/samsung/a3y17lte",
     "branch": "lineage-24.0"
-  },
-  {
-    "repository": "android_hardware_samsung",
-    "target_path": "hardware/samsung"
   }
 ]

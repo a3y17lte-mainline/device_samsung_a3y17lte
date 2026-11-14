@@ -67,21 +67,13 @@ PRODUCT_COPY_FILES += \
     $(DEVICE_PATH)/configs/keylayout/tm2-touchkey.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/tm2-touchkey.kl \
     $(DEVICE_PATH)/configs/idc/Imagis_capacitive_touchscreen.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/Imagis_capacitive_touchscreen.idc
 
-# Graphics: Mesa Panfrost (GLES 3.1), minigbm (gbm_mesa), drm_hwcomposer. No Vulkan on Midgard.
+# Graphics: drm_hwcomposer (HWC3, in AOSP). Mesa Panfrost (GLES 3.1, no Vulkan on Midgard)
+# and the gralloc allocator/mapper need our own integration: AOSP 17's external/mesa3d builds
+# only gfxstream, and AOSP minigbm has no backend for Exynos DRM + Panfrost. TODO.
 PRODUCT_PACKAGES += \
-    libEGL_mesa \
-    libGLESv1_CM_mesa \
-    libGLESv2_mesa \
-    libgallium_dri \
-    libglapi \
-    hwcomposer.drm \
-    android.hardware.composer.hwc3-service.drm \
-    android.hardware.graphics.allocator-service.minigbm_gbm_mesa \
-    mapper.minigbm_gbm_mesa
+    android.hardware.composer.hwc3-service.drm
 PRODUCT_VENDOR_PROPERTIES += \
     ro.hardware.egl=mesa \
-    ro.hardware.hwcomposer=drm \
-    ro.hardware.gralloc=minigbm_gbm_mesa \
     ro.opengles.version=196609 \
     debug.renderengine.backend=skiaglthreaded \
     debug.hwui.renderer=skiagl
@@ -95,19 +87,24 @@ PRODUCT_PACKAGES += \
     android.hardware.health-service.example_recovery \
     charger_res_images
 
-# KeyMint / Gatekeeper: software (no TEE driver; see the security model)
+# KeyMint / Gatekeeper: non-secure software implementations (no TEE driver; see the
+# security model): the Rust KeyMint reference TA and the software Gatekeeper.
 PRODUCT_PACKAGES += \
-    android.hardware.security.keymint-service \
-    android.hardware.gatekeeper-service.software
+    android.hardware.security.keymint-service.nonsecure \
+    android.hardware.gatekeeper-service.nonsecure
 
-# Lights (panel backlight, touch-key LEDs), vibrator (FF), power, thermal, USB
+# Lights: LineageOS light HAL (scans /sys/class/backlight). USB: AOSP example HAL, a real
+# implementation over /sys/class/typec (our TCPM port). Power: the example HAL is a no-op,
+# fine for bring-up.
+# No USB gadget HAL: the example one hard-codes its UDC (11110000.dwc3), so the framework
+# uses the sys.usb.config path of AOSP's init.usb.configfs.rc instead.
+# TODO, no usable HAL exists: vibrator (the AOSP example is a fake, LineageOS's is
+# timed_output; regulator-haptic is an input force-feedback device), thermal (the example
+# reports a constant 30.1 C; ours needs the soc-thermal zone).
 PRODUCT_PACKAGES += \
     android.hardware.light-service.lineage \
-    android.hardware.vibrator-service.example \
     android.hardware.power-service.example \
-    android.hardware.thermal-service.example \
-    android.hardware.usb-service.example \
-    android.hardware.usb.gadget-service.example
+    android.hardware.usb-service.example
 
 # Wi-Fi (ath10k_sdio, nl80211)
 PRODUCT_PACKAGES += \
@@ -132,6 +129,4 @@ PRODUCT_COPY_FILES += \
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(DEVICE_PATH) \
-    external/mesa3d \
-    external/minigbm \
     external/drm_hwcomposer

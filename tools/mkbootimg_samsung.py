@@ -32,6 +32,75 @@ def bootconfig(path):
     return data + struct.pack("<II", len(data), sum(data) & 0xffffffff) + BOOTCONFIG_MAGIC
 
 
+DTBH_PLATFORM = 0x50a6       # platform/subtype codes of the stock A320F dt.img
+DTBH_SUBTYPE = 0x217584da
+DTB_FREE_SPACE = 0x8000      # S-Boot edits /chosen and /memory in place: leave it room
+
+
+def fdt_root_u32(dtb, name):
+    """Read a one-cell property of the root node from a flattened device tree."""
+    magic, total, off_struct, off_strings = struct.unpack_from(">IIII", dtb, 0)
+    if magic != 0xd00dfeed:
+        sys.exit("not a DTB")
+    pos, depth = off_struct, 0
+    while True:
+        tok, = struct.unpack_from(">I", dtb, pos)
+        pos += 4
+        if tok == 1:                                   # BEGIN_NODE
+            end = dtb.index(b"\0", pos)
+            pos = (end + 4) & ~3
+            depth += 1
+        elif tok == 2:                                 # END_NODE
+            depth -= 1
+        elif tok == 3:                                 # PROP
+            length, nameoff = struct.unpack_from(">II", dtb, pos)
+            pos += 8
+            pname = dtb[off_strings + nameoff:dtb.index(b"\0", off_strings + nameoff)]
+            if depth == 1 and pname == name.encode():
+                if length != 4:
+                    sys.exit(f"{name}: expected one cell")
+                return struct.unpack_from(">I", dtb, pos)[0]
+            pos = (pos + length + 3) & ~3
+        elif tok == 4:                                 # NOP
+            continue
+        else:                                          # END
+            sys.exit(f"DTB has no root property {name} (needed by S-Boot)")
+
+
+def fdt_add_free_space(dtb, extra):
+    """Grow totalsize: libfdt (S-Boot) uses the space after the strings block."""
+    total, = struct.unpack_from(">I", dtb, 4)
+    off_strings, = struct.unpack_from(">I", dtb, 12)
+    size_strings, = struct.unpack_from(">I", dtb, 32)
+    if off_strings + size_strings != total or len(dtb) != total:
+        sys.exit("DTB layout: strings block is not last")
+    d = bytearray(dtb) + b"\0" * extra
+    struct.pack_into(">I", d, 4, total + extra)
+    return bytes(d)
+
+
+def dtbh(dtbs, page):
+    """Samsung DTBH table, as LineageOS's old dtbhtool (hardware/samsung, <= 18.1) wrote it:
+    'DTBH', version 2, count; per DTB chip/platform/subtype/hw_rev/hw_rev_end/offset/size/0x20;
+    header padded to a page, each DTB page-aligned."""
+    blobs = []
+    for path in dtbs:
+        d = fdt_add_free_space(open(path, "rb").read(), DTB_FREE_SPACE)
+        blobs.append((fdt_root_u32(d, "model_info-chip"), fdt_root_u32(d, "model_info-hw_rev"),
+                      fdt_root_u32(d, "model_info-hw_rev_end"), d))
+    blobs.sort(key=lambda b: (b[0], b[1]))
+    hdr_len = 12 + 32 * len(blobs)
+    offset = hdr_len + page - (hdr_len % page)
+    hdr = struct.pack("<4sII", b"DTBH", 2, len(blobs))
+    body = b""
+    for chip, rev, rev_end, d in blobs:
+        size = len(pad(d, page))
+        hdr += struct.pack("<8I", chip, DTBH_PLATFORM, DTBH_SUBTYPE, rev, rev_end, offset, size, 0x20)
+        body += pad(d, page)
+        offset += size
+    return hdr + b"\0" * (hdr_len + page - (hdr_len % page) - len(hdr)) + body
+
+
 def sboot_image_header(kernel):
     """arm64 Image header in the layout S-Boot is known to boot: text_offset 0x80000,
     flags 0 (mainline writes 0 and LE/4K/anywhere flags). The kernel is relocatable and
@@ -53,6 +122,8 @@ def pack(a):
         ramdisk += bootconfig(a.bootconfig)
     second = open(a.second, "rb").read() if a.second else b""
     dt = open(a.dt, "rb").read() if a.dt else b""
+    if a.dtb:
+        dt = dtbh(a.dtb, a.pagesize)
     cmdline = a.cmdline.encode()
     if len(cmdline) > 512 + 1024 - 2:
         sys.exit("cmdline too long")
@@ -110,7 +181,9 @@ def main():
     ap.add_argument("--kernel")
     ap.add_argument("--ramdisk")
     ap.add_argument("--second")
-    ap.add_argument("--dt")
+    ap.add_argument("--dt", help="a ready DTBH dt.img")
+    ap.add_argument("--dtb", action="append", help="DTB(s) to pack into a DTBH table (instead of --dt)")
+    ap.add_argument("--dump-dtbh", help="print the DTBH table of a dt.img and exit")
     ap.add_argument("--bootconfig", help="key = value file appended to the ramdisk")
     ap.add_argument("--seandroid", action="store_true", help="append the SEANDROIDENFORCE trailer")
     ap.add_argument("--sboot-image-header", action="store_true",
@@ -126,6 +199,13 @@ def main():
     ap.add_argument("--pagesize", type=int, default=2048)
     ap.add_argument("-o", "--output")
     a = ap.parse_args()
+    if a.dump_dtbh:
+        d = open(a.dump_dtbh, "rb").read()
+        magic, ver, n = struct.unpack_from("<4sII", d, 0)
+        print(magic, ver, n, len(d))
+        for i in range(n):
+            print(" ".join("%#x" % x for x in struct.unpack_from("<8I", d, 12 + 32 * i)))
+        return
     if a.unpack:
         unpack(a.unpack, a.outdir or "unpacked")
     else:
