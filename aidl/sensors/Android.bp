@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: Apache-2.0
+
+// Sensors HAL for the STM32 sensor hub (kernel ssp_sensors: IIO devices). Sensors.h/.cpp are
+// AOSP's default service (event queue, wake lock handling), Sensor.h/.cpp read the IIO devices.
+cc_binary {
+    name: "android.hardware.sensors-service.a3y17lte",
+    relative_install_path: "hw",
+    init_rc: ["android.hardware.sensors-service.a3y17lte.rc"],
+    vintf_fragments: ["android.hardware.sensors-service.a3y17lte.xml"],
+    vendor: true,
+    srcs: [
+        "Sensor.cpp",
+        "Sensors.cpp",
+        "main.cpp",
+    ],
+    shared_libs: [
+        "libbinder_ndk",
+        "liblog",
+    ],
+    static_libs: [
+        "android.hardware.common-V2-ndk",
+        "android.hardware.common.fmq-V1-ndk",
+        "android.hardware.sensors-V3-ndk",
+        "android.system.suspend-V1-ndk",
+        "libbase",
+        "libcutils",
+        "libfmq",
+        "libpower",
+        "libutils",
+    ],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+}
