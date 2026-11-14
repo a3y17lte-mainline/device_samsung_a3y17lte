@@ -98,13 +98,13 @@ PRODUCT_PACKAGES += \
 # fine for bring-up.
 # No USB gadget HAL: the example one hard-codes its UDC (11110000.dwc3), so the framework
 # uses the sys.usb.config path of AOSP's init.usb.configfs.rc instead.
-# TODO, no usable HAL exists: vibrator (the AOSP example is a fake, LineageOS's is
-# timed_output; regulator-haptic is an input force-feedback device), thermal (the example
-# reports a constant 30.1 C; ours needs the soc-thermal zone).
+# Vibrator: our own (aidl/vibrator), regulator-haptic through input force feedback.
+# TODO: thermal (the example reports a constant 30.1 C; ours needs the soc-thermal zone).
 PRODUCT_PACKAGES += \
     android.hardware.light-service.lineage \
     android.hardware.power-service.example \
-    android.hardware.usb-service.example
+    android.hardware.usb-service.example \
+    android.hardware.vibrator-service.a3y17lte
 
 # Wi-Fi (ath10k_sdio, nl80211)
 PRODUCT_PACKAGES += \

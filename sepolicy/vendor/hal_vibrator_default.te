@@ -1,0 +1,3 @@
+# regulator-haptic: Linux input force-feedback device, looked up by name
+allow hal_vibrator_default input_device:dir r_dir_perms;
+allow hal_vibrator_default input_device:chr_file rw_file_perms;
