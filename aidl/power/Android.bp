@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: Apache-2.0
+
+cc_binary {
+    name: "android.hardware.power-service.a3y17lte",
+    defaults: ["android.hardware.power-ndk_shared"],
+    relative_install_path: "hw",
+    init_rc: ["android.hardware.power-service.a3y17lte.rc"],
+    vintf_fragments: ["android.hardware.power-service.a3y17lte.xml"],
+    vendor: true,
+    srcs: [
+        "Power.cpp",
+        "main.cpp",
+    ],
+    shared_libs: [
+        "libbase",
+        "libbinder_ndk",
+    ],
+}
