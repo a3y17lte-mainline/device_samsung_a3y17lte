@@ -30,4 +30,8 @@
     <!-- No telephony hardware in use (modem out of scope) -->
     <bool name="config_voice_capable">false</bool>
     <bool name="config_sms_capable">false</bool>
+
+    <!-- Headset jack: the codec reports SW_HEADPHONE_INSERT / SW_MICROPHONE_INSERT on the
+         "a3y17lte Headset" input device (ASoC jack), no extcon/switch class -->
+    <bool name="config_useDevInputEventForAudioJack">true</bool>
 </resources>

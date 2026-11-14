@@ -55,11 +55,15 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_c2_tv.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_c2_tv.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_c2_video.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_c2_video.xml
 
-# Audio: stub AIDL HAL (r_submix, no speaker/mic) until the COD3026X driver exists;
-# without any audio HAL audioserver crash-loops.
+# Audio: our AIDL core service (aidl/audio: AOSP's example implementation with a module on
+# real ALSA streams and libaudioroute routing) for the a3y17lte card: loudspeaker (TFA9896),
+# earpiece, headphones and three mics (COD3026X). Plus r_submix and USB audio. No effects
+# HAL yet (the AOSP one only ships in an APEX together with the example core service).
 PRODUCT_PACKAGES += \
-    android.hardware.audio.service-aidl.example \
-    android.hardware.audio.effect.service-aidl.example
+    android.hardware.audio.service-aidl.a3y17lte \
+    audio_policy_configuration_a3y17lte.xml \
+    mixer_paths_a3y17lte.xml
+# (audio output and microphone features come from handheld_core_hardware.xml)
 
 # Input
 PRODUCT_COPY_FILES += \

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Mixer routing of the a3y17lte card (libaudioroute, applied by the audio HAL per device).
+
+    I2S0 -> audio mixer (DMIX, AP port) -> codec2codec 48 kHz ->
+        COD3026X: earpiece (mono), headphones, MIC1 main / MIC2 second / MIC3 headset
+        TFA9896 ("Speaker" prefix): loudspeaker, plays the left channel
+    Capture: codec ADC -> mixer -> AP ("AP Capture Source" = Codec).
+
+    "Speaker Switch" needs a pin switch on the card (the TFA9896 has no switch of its own):
+    until the kernel has it, libaudioroute skips that control and the loudspeaker plays
+    whenever anything plays.
+-->
+<mixer>
+    <!-- Initial state, and what audio_route_reset returns to -->
+    <ctl name="DMIX AP Switch" value="1" />
+    <ctl name="AP Playback Volume" value="7" />
+    <ctl name="AP Capture Source" value="Codec" />
+    <ctl name="Speaker Amp Input" value="Left" />
+    <ctl name="Speaker Switch" value="0" />
+    <ctl name="Earpiece Switch" value="0" />
+    <ctl name="Headphone Switch" value="0" />
+    <ctl name="Mono Mix" value="Disable" />
+    <ctl name="ADCL Mixer MIC1 Switch" value="0" />
+    <ctl name="ADCR Mixer MIC1 Switch" value="0" />
+    <ctl name="ADCL Mixer MIC2 Switch" value="0" />
+    <ctl name="ADCR Mixer MIC2 Switch" value="0" />
+    <ctl name="ADCL Mixer MIC3 Switch" value="0" />
+    <ctl name="ADCR Mixer MIC3 Switch" value="0" />
+
+    <!-- Outputs -->
+    <path name="speaker">
+        <ctl name="Speaker Switch" value="1" />
+    </path>
+
+    <path name="earpiece">
+        <ctl name="Mono Mix" value="(L+R)/2" />
+        <ctl name="Earpiece Switch" value="1" />
+    </path>
+
+    <path name="headphones">
+        <ctl name="Headphone Switch" value="1" />
+    </path>
+
+    <!-- Inputs: both ADC channels from one microphone -->
+    <path name="main-mic">
+        <ctl name="ADCL Mixer MIC1 Switch" value="1" />
+        <ctl name="ADCR Mixer MIC1 Switch" value="1" />
+    </path>
+
+    <path name="second-mic">
+        <ctl name="ADCL Mixer MIC2 Switch" value="1" />
+        <ctl name="ADCR Mixer MIC2 Switch" value="1" />
+    </path>
+
+    <path name="headset-mic">
+        <ctl name="ADCL Mixer MIC3 Switch" value="1" />
+        <ctl name="ADCR Mixer MIC3 Switch" value="1" />
+    </path>
+</mixer>

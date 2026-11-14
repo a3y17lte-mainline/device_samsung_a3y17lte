@@ -1,0 +1,58 @@
+// SPDX-License-Identifier: Apache-2.0
+
+cc_binary {
+    name: "android.hardware.audio.service-aidl.a3y17lte",
+    relative_install_path: "hw",
+    init_rc: ["android.hardware.audio.service-aidl.a3y17lte.rc"],
+    vintf_fragments: ["android.hardware.audio.service-aidl.a3y17lte.xml"],
+    vendor: true,
+    defaults: [
+        "aidlaudioservice_defaults",
+        "latest_android_hardware_audio_core_sounddose_ndk_shared",
+        "latest_android_hardware_audio_core_ndk_shared",
+        "latest_android_hardware_bluetooth_audio_ndk_shared",
+        "latest_android_media_audio_common_types_ndk_shared",
+    ],
+    srcs: [
+        "AudioRouter.cpp",
+        "ModuleA3.cpp",
+        "StreamA3.cpp",
+        "main.cpp",
+    ],
+    static_libs: [
+        "libaudioserviceexampleimpl",
+    ],
+    shared_libs: [
+        "android.hardware.bluetooth.audio-impl",
+        "libaudio_aidl_conversion_common_ndk",
+        "libaudioroute",
+        "libbluetooth_audio_session_aidl",
+        "liblog",
+        "libmedia_helper",
+        "libstagefright_foundation",
+    ],
+    // core-impl/StreamAlsaBase.h includes "alsa/UtilsAlsa.h" from the module root, which
+    // libaudioserviceexampleimpl does not export.
+    include_dirs: ["hardware/interfaces/audio/aidl/default"],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wthread-safety",
+        "-DBACKEND_NDK",
+    ],
+}
+
+prebuilt_etc {
+    name: "audio_policy_configuration_a3y17lte.xml",
+    filename: "audio_policy_configuration.xml",
+    src: "audio_policy_configuration.xml",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "mixer_paths_a3y17lte.xml",
+    filename: "mixer_paths.xml",
+    src: "mixer_paths.xml",
+    vendor: true,
+}
