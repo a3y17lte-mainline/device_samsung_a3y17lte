@@ -5,7 +5,10 @@
 #
 
 A3_MKBOOTIMG := $(DEVICE_PATH)/tools/mkbootimg_samsung.py
-A3_DTB := $(KERNEL_OUT)/arch/$(KERNEL_ARCH)/boot/dts/exynos/exynos7870-a3y17lte.dtb
+# The kernel's object directory, spelled out: KERNEL_OUT is set by vendor/lineage's
+# build/tasks/kernel.mk, which is read after this file. The DTB is built by the kernel rule
+# (INSTALLED_KERNEL_TARGET, a dependency of both images).
+A3_DTB := $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/arch/$(KERNEL_ARCH)/boot/dts/exynos/exynos7870-a3y17lte.dtb
 
 # The packer builds the DTBH table itself from the kernel-built DTB (S-Boot selects it by
 # the model_info-* properties) and leaves free space in it for S-Boot's in-place edits.
