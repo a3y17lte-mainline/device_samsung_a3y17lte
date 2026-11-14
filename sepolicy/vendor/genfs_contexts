@@ -9,4 +9,24 @@ genfscon sysfs /devices/platform/soc@0/14800000.dsi       u:object_r:sysfs_a3_ba
 genfscon sysfs /devices/platform/i2c-touchkey             u:object_r:sysfs_a3_leds:s0
 genfscon sysfs /devices/platform/led-controller           u:object_r:sysfs_a3_leds:s0
 
+# Sensor hub on SPI4: the IIO devices of the sensors HAL
+genfscon sysfs /devices/platform/soc@0/13930000.spi       u:object_r:sysfs_a3_sensors:s0
+
+# devfreq: GPU (Panfrost) and the INT/DISP buses (exynos-bus)
+genfscon sysfs /devices/platform/soc@0/11400000.gpu/devfreq  u:object_r:sysfs_a3_devfreq:s0
+genfscon sysfs /devices/platform/bus-int                  u:object_r:sysfs_a3_devfreq:s0
+genfscon sysfs /devices/platform/bus-disp                 u:object_r:sysfs_a3_devfreq:s0
+
+# Network interfaces: wlan0 (ath10k on mmc1)
+genfscon sysfs /devices/platform/soc@0/13550000.mmc/mmc_host/mmc1/mmc1:0001/mmc1:0001:1/net  u:object_r:sysfs_net:s0
+
+# Wakeup sources with a fixed path
+genfscon sysfs /devices/platform/gpio-keys/wakeup                  u:object_r:sysfs_wakeup:s0
+genfscon sysfs /devices/platform/gpio-hall-effect-sensor/wakeup    u:object_r:sysfs_wakeup:s0
+
+# Not labelled yet: what sits behind an I2C adapter (wakeup sources of the charger, fuel gauge,
+# USB-C controller and RTC; typec; extcon). The path has the adapter number (i2c-N), which
+# follows the probe order: it needs fixed numbers (i2c aliases in the DT) first. Until then
+# those nodes carry the label of their bus (sysfs_batteryinfo above) or plain sysfs.
+
 # Thermal zones, cpufreq: covered by the platform policy (sysfs_thermal, sysfs_devices_system_cpu)

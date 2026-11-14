@@ -60,10 +60,11 @@ PRODUCT_COPY_FILES += \
 
 # Audio: our AIDL core service (aidl/audio: AOSP's example implementation with a module on
 # real ALSA streams and libaudioroute routing) for the a3y17lte card: loudspeaker (TFA9896),
-# earpiece, headphones and three mics (COD3026X). Plus r_submix and USB audio. No effects
-# HAL yet (the AOSP one only ships in an APEX together with the example core service).
+# earpiece, headphones and three mics (COD3026X). Plus r_submix and USB audio. Effects:
+# AOSP's effects service and software effects, built here outside its APEX (aidl/audio-effect).
 PRODUCT_PACKAGES += \
     android.hardware.audio.service-aidl.a3y17lte \
+    android.hardware.audio.effect.service-aidl.a3y17lte \
     audio_policy_configuration_a3y17lte.xml \
     mixer_paths_a3y17lte.xml
 # (audio output and microphone features come from handheld_core_hardware.xml)
@@ -108,15 +109,15 @@ PRODUCT_PACKAGES += \
     android.hardware.gatekeeper-service.nonsecure
 
 # Lights: LineageOS light HAL (scans /sys/class/backlight). USB: AOSP example HAL, a real
-# implementation over /sys/class/typec (our TCPM port). Power: the example HAL is a no-op,
-# fine for bring-up.
+# implementation over /sys/class/typec (our TCPM port).
 # No USB gadget HAL: the example one hard-codes its UDC (11110000.dwc3), so the framework
 # uses the sys.usb.config path of AOSP's init.usb.configfs.rc instead.
-# Vibrator and thermal: our own (aidl/): regulator-haptic through input force feedback, and
-# the kernel thermal zones (soc-thermal, battery-thermal).
+# Vibrator, thermal and power: our own (aidl/): regulator-haptic through input force feedback,
+# the kernel thermal zones (soc-thermal, battery-thermal), and CPU boosts through the cpufreq
+# policy limits (interaction, launch, battery saver).
 PRODUCT_PACKAGES += \
     android.hardware.light-service.lineage \
-    android.hardware.power-service.example \
+    android.hardware.power-service.a3y17lte \
     android.hardware.thermal-service.a3y17lte \
     android.hardware.usb-service.example \
     android.hardware.vibrator-service.a3y17lte
@@ -137,7 +138,30 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml
 
-# Later (phase 4 HAL order): sensors (IIO), audio (after COD3026X), NFC, camera flash.
+# Sensors: our HAL (aidl/sensors) on the sensor hub's IIO devices: accelerometer, gyroscope,
+# magnetometer, barometer, light, proximity (wake-up). Rotation vector, gravity and linear
+# acceleration are fused by the framework.
+PRODUCT_PACKAGES += \
+    android.hardware.sensors-service.a3y17lte
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.accelerometer.xml \
+    frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.gyroscope.xml \
+    frameworks/native/data/etc/android.hardware.sensor.compass.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.compass.xml \
+    frameworks/native/data/etc/android.hardware.sensor.barometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.barometer.xml \
+    frameworks/native/data/etc/android.hardware.sensor.light.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.light.xml \
+    frameworks/native/data/etc/android.hardware.sensor.proximity.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.proximity.xml
+
+# NFC (Samsung S3NRN80): our HAL (aidl/nfc) passes NCI packets between Android's NFC stack and
+# the kernel's raw NCI device (/dev/s3fwrn5). Reader mode and host card emulation; no eSE (it
+# is behind the secure world), no UICC. The chip's firmware is never written.
+PRODUCT_PACKAGES += \
+    android.hardware.nfc-service.a3y17lte
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.nfc.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.xml \
+    frameworks/native/data/etc/android.hardware.nfc.hce.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.hce.xml \
+    frameworks/native/data/etc/com.nxp.mifare.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.nxp.mifare.xml
+
+# Later: camera flash.
 # Out of scope for now: RIL/modem, camera, GNSS, fingerprint.
 
 # Soong namespaces

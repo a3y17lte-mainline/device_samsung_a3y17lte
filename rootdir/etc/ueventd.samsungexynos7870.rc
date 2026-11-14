@@ -7,15 +7,40 @@ firmware_directories /vendor/firmware/
 # GPU (Panfrost) and display
 /dev/dri/*                0666   system     graphics
 
-# Sensor hub, IIO
+# Sensor hub (STM32 on SPI4): the IIO devices of ssp_sensors, for the sensors HAL. The
+# attribute is a literal name, so every one the HAL writes is listed.
 /dev/iio:device*          0660   system     system
-/sys/bus/iio/devices/iio:device*  scan_elements/*      0660 system system
-/sys/bus/iio/devices/iio:device*  buffer/*             0660 system system
-/sys/bus/iio/devices/iio:device*  sampling_frequency   0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  buffer/enable                         0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  buffer/length                         0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  current_timestamp_clock               0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  sampling_frequency                    0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  in_accel_sampling_frequency           0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  in_anglvel_sampling_frequency         0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  events/in_proximity_thresh_either_en  0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_accel_x_en           0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_accel_y_en           0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_accel_z_en           0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_anglvel_x_en         0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_anglvel_y_en         0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_anglvel_z_en         0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_magn_x_en            0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_magn_y_en            0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_magn_z_en            0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_pressure_en          0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_temp_en              0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_illuminance_en       0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_colortemp_en         0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_intensity_red_en     0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_intensity_green_en   0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_intensity_blue_en    0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_intensity_clear_en   0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_proximity_en         0660 system system
+/sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_timestamp_en         0660 system system
 
 # Bluetooth UART is owned by hci_qca in the kernel: nothing here
 
-# NFC (s3fwrn5 via the kernel NCI stack): no device node
+# NFC: raw NCI frames of the S3NRN80 (ANDROID: kernel patch), for the NFC HAL
+/dev/s3fwrn5              0660   nfc        nfc
 
 # RTC
 /dev/rtc0                 0660   system     system

@@ -1,2 +1,4 @@
 type sysfs_a3_backlight, sysfs_type, fs_type;
 type sysfs_a3_leds, sysfs_type, fs_type;
+type sysfs_a3_sensors, sysfs_type, fs_type;
+type sysfs_a3_devfreq, sysfs_type, fs_type;
