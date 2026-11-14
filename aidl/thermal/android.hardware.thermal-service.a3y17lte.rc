@@ -1,0 +1,4 @@
+service vendor.thermal-a3y17lte /vendor/bin/hw/android.hardware.thermal-service.a3y17lte
+    class hal
+    user system
+    group system

@@ -98,11 +98,12 @@ PRODUCT_PACKAGES += \
 # fine for bring-up.
 # No USB gadget HAL: the example one hard-codes its UDC (11110000.dwc3), so the framework
 # uses the sys.usb.config path of AOSP's init.usb.configfs.rc instead.
-# Vibrator: our own (aidl/vibrator), regulator-haptic through input force feedback.
-# TODO: thermal (the example reports a constant 30.1 C; ours needs the soc-thermal zone).
+# Vibrator and thermal: our own (aidl/): regulator-haptic through input force feedback, and
+# the kernel thermal zones (soc-thermal, battery-thermal).
 PRODUCT_PACKAGES += \
     android.hardware.light-service.lineage \
     android.hardware.power-service.example \
+    android.hardware.thermal-service.a3y17lte \
     android.hardware.usb-service.example \
     android.hardware.vibrator-service.a3y17lte
 

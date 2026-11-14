@@ -1,0 +1,4 @@
+# Thermal zones and cooling devices (/sys/class/thermal -> /sys/devices/virtual/thermal)
+allow hal_thermal_default sysfs_thermal:dir r_dir_perms;
+allow hal_thermal_default sysfs_thermal:file r_file_perms;
+allow hal_thermal_default sysfs_thermal:lnk_file read;
