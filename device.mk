@@ -103,10 +103,11 @@ PRODUCT_PACKAGES += \
     charger_res_images
 
 # KeyMint / Gatekeeper: non-secure software implementations (no TEE driver; see the
-# security model): the Rust KeyMint reference TA and the software Gatekeeper.
+# security model): the Rust KeyMint reference TA and the software Gatekeeper. Gatekeeper's
+# service only installs through its vendor APEX (the binary is installable: false).
 PRODUCT_PACKAGES += \
     android.hardware.security.keymint-service.nonsecure \
-    android.hardware.gatekeeper-service.nonsecure
+    com.android.hardware.gatekeeper.nonsecure
 
 # Lights: LineageOS light HAL (scans /sys/class/backlight). USB: AOSP example HAL, a real
 # implementation over /sys/class/typec (our TCPM port).
