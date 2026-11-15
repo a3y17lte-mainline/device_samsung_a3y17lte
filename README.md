@@ -15,7 +15,7 @@ android17-6.18) with open-source HALs only: our Mesa Panfrost (external_mesa), m
   `a3y17lte_defconfig`); the DTBH dt.img is built from its DTB by
   `tools/mkbootimg_samsung.py` (format of LineageOS's old dtbhtool, codes of the stock dt.img).
   Modules load by modalias (ueventd).
-- Firmware: `./extract-files.sh FIRMWARE_DIR` fills vendor/samsung/a3y17lte (4 files, sha256-pinned).
+- Firmware: `./extract-files.sh FIRMWARE_DIR` fills vendor/samsung/a3y17lte (sha256-pinned).
 - Graphics: `external/mesa` (a3y17lte-mainline/external_mesa: the Mesa release with our Midgard
   fixes, built by its meson-based Android.mk; Panfrost only) and `external/minigbm`
   (a3y17lte-mainline/external_minigbm replaces AOSP's: dumb buffers on the Exynos DRM node).

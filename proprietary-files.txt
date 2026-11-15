@@ -10,6 +10,11 @@
 ath10k-fw(system/qwlan30.bin,system/otp30.bin):firmware/ath10k/QCA9377/hw1.0/firmware-sdio-5.bin|2db55a8dba62d62ade466dd9297622bc906b38dbb16ce3226a53cae2f2c63801
 system/bdwlan30.bin:firmware/ath10k/QCA9377/hw1.0/board.bin|53a40ab6015a5aade2305271aab2ecbdcfb8b95cc6ec67b47c3d650871bec737
 
+# Wi-Fi regulatory database (wireless-regdb, ISC licence; signed, the kernel checks it).
+# Without it cfg80211 stays in the world domain: no country from the AP, 5 GHz restricted.
+wireless-regdb/regulatory.db:firmware/regulatory.db|7e236caecd939c8ec98be4870bf30422f28ffef2565a38aaaa2d9ddabd0c2641
+wireless-regdb/regulatory.db.p7s:firmware/regulatory.db.p7s|50332f0db09b8bcc719235ec4985c27377f2cc2f42abb7b5dcf951866c5a888a
+
 # Bluetooth (QCA9377 UART, hci_qca): controller version 0x00230302, stock TF 1.1 pair
 system/rampatch_tlv_tf_1.1.tlv:firmware/qca/rampatch_00230302.bin|f632390a60fdec1e2c65422237fada1fe375940057a1c059eb683de23ae84fc4
 system/nvm_tlv_tf_1.1.bin:firmware/qca/nvm_00230302.bin|4ef3e40deb40446345c6780d13670b17b471442951fd5964db73e9fbeceb035f
