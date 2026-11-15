@@ -19,16 +19,9 @@ cc_binary {
         "EffectFactory.cpp",
         "EffectMain.cpp",
     ],
-    required: [
-        "audio_effects_config_a3y17lte.xml",
-        "libbundleaidl",
-        "libdownmixaidl",
-        "libdynamicsprocessingaidl",
-        "libloudnessenhanceraidl",
-        "libpreprocessingaidl",
-        "libreverbaidl",
-        "libvisualizeraidl",
-    ],
+    // The effect libraries (frameworks/av) are not visible to device modules, so they cannot
+    // be "required" here: device.mk lists them in PRODUCT_PACKAGES.
+    required: ["audio_effects_config_a3y17lte.xml"],
 }
 
 prebuilt_etc {

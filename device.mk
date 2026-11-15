@@ -65,6 +65,13 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.audio.service-aidl.a3y17lte \
     android.hardware.audio.effect.service-aidl.a3y17lte \
+    libbundleaidl \
+    libdownmixaidl \
+    libdynamicsprocessingaidl \
+    libloudnessenhanceraidl \
+    libpreprocessingaidl \
+    libreverbaidl \
+    libvisualizeraidl \
     audio_policy_configuration_a3y17lte.xml \
     mixer_paths_a3y17lte.xml
 # (audio output and microphone features come from handheld_core_hardware.xml)
