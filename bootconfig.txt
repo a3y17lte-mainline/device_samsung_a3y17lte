@@ -12,4 +12,8 @@ androidboot.console = ttySAC2
 kernel.s3c2410_wdt.tmr_atboot = 1
 kernel.clk_ignore_unused
 kernel.pd_ignore_unused
-kernel.loglevel = 7
+# loglevel/ignore_loglevel are early params, and S-Boot passes loglevel=4: set the console
+# level as a sysctl (applied before init runs) so init/apexd messages reach pstore, and stop
+# /dev/kmsg rate-limiting init's own log lines.
+kernel.sysctl.kernel.printk = "8 4 1 7"
+kernel.printk.devkmsg = on
