@@ -26,9 +26,8 @@ on boot
     # (02:a3:17:00:00:02 / 02:A3:17:00:00:01; the real ones are in EFS, which is not used).
     # Without an address hci0 stays unconfigured and the Bluetooth HAL never sees it.
 
-    # Backlight and touch-key LEDs for the lights HAL
+    # Backlight and flash LED (the touch-key LED comes with a module: ueventd.rc)
     chown system system /sys/class/backlight/14800000.dsi.0/brightness
-    chown system system /sys/class/leds/tm2-touchkey/brightness
     chown system system /sys/class/leds/white:flash/brightness
 
 # Offline charging: S-Boot passes androidboot.mode=charger when a cable is plugged into a

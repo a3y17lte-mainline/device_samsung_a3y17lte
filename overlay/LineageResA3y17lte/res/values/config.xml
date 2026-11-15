@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Physical keys: Home (gpio-keys), Back + Recents (capacitive, tm2-touchkey).
+         Bits: home 1, back 2, menu 4, assist 8, app switch 16. Home wakes the device. -->
+    <integer name="config_deviceHardwareKeys">19</integer>
+    <integer name="config_deviceHardwareWakeKeys">1</integer>
+
+    <!-- Touch-key backlight: on/off only (1), lit on activity with the framework's timeout -->
+    <integer name="config_deviceSupportsButtonBrightnessControl">1</integer>
+    <dimen name="config_buttonBrightnessSettingDefaultFloat">1.0</dimen>
+</resources>

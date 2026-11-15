@@ -40,6 +40,7 @@ PRODUCT_COPY_FILES += \
 # Overlays (RRO): hardware keys, lid, brightness, power profile, Wi-Fi bands
 PRODUCT_PACKAGES += \
     FrameworksResA3y17lte \
+    LineageResA3y17lte \
     WifiResA3y17lte
 
 # Feature permissions
@@ -126,7 +127,8 @@ PRODUCT_PACKAGES += \
     android.hardware.security.keymint-service.nonsecure \
     com.android.hardware.gatekeeper.nonsecure
 
-# Lights: LineageOS light HAL (scans /sys/class/backlight). USB: AOSP example HAL, a real
+# Lights: our own (aidl/light): the touch-key backlight. The LineageOS light HAL only knows fixed
+# LED names, and the panel backlight is driven by drm_hwcomposer. USB: AOSP example HAL, a real
 # implementation over /sys/class/typec (our TCPM port).
 # No USB gadget HAL: the example one hard-codes its UDC (11110000.dwc3), so the framework
 # uses the sys.usb.config path of AOSP's init.usb.configfs.rc instead.
@@ -134,7 +136,7 @@ PRODUCT_PACKAGES += \
 # the kernel thermal zones (soc-thermal, battery-thermal), and CPU boosts through the cpufreq
 # policy limits (interaction, launch, battery saver).
 PRODUCT_PACKAGES += \
-    android.hardware.light-service.lineage \
+    android.hardware.light-service.a3y17lte \
     android.hardware.power-service.a3y17lte \
     android.hardware.thermal-service.a3y17lte \
     android.hardware.usb-service.example \

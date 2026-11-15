@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Physical keys: Home (gpio-keys), Back + Recents (capacitive, tm2-touchkey).
-         Bits: home 1, back 2, menu 4, assist 8, app switch 16. -->
-    <integer name="config_deviceHardwareKeys">19</integer>
-    <integer name="config_deviceHardwareWakeKeys">1</integer>
+    <!-- Physical keys (which ones: LineageResA3y17lte): no navigation bar -->
     <bool name="config_showNavigationBar">false</bool>
 
     <!-- Flip cover hall sensor (SW_LID) -->
