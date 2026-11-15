@@ -3,8 +3,11 @@
 # work/firmware, see its README); destination is relative to the vendor partition.
 # Nothing else is proprietary: all HALs are open source.
 
-# Wi-Fi (QCA9377, ath10k_sdio): linux-firmware SDIO firmware + this board's calibration data
-linux-firmware/ath10k/QCA9377/hw1.0/firmware-sdio-5.bin:firmware/ath10k/QCA9377/hw1.0/firmware-sdio-5.bin|017b4ae7bdb5821ecb439fbf96d198421a57926918f2513db5fbd6d9c01debe6
+# Wi-Fi (QCA9377, ath10k_sdio): the stock firmware + this board's calibration data.
+# "ath10k-fw(FIRMWARE,OTP)" wraps the two stock images in ath10k's container with
+# tools/mk_ath10k_fw.py (wake-on-WLAN: see there); the sha256 is the container's.
+# linux-firmware's firmware-sdio-5.bin (WLAN.TF.1.1.1-00061) also works, without wake-on-WLAN.
+ath10k-fw(system/qwlan30.bin,system/otp30.bin):firmware/ath10k/QCA9377/hw1.0/firmware-sdio-5.bin|2db55a8dba62d62ade466dd9297622bc906b38dbb16ce3226a53cae2f2c63801
 system/bdwlan30.bin:firmware/ath10k/QCA9377/hw1.0/board.bin|53a40ab6015a5aade2305271aab2ecbdcfb8b95cc6ec67b47c3d650871bec737
 
 # Bluetooth (QCA9377 UART, hci_qca): controller version 0x00230302, stock TF 1.1 pair

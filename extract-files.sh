@@ -2,7 +2,7 @@
 # extract-files.sh FIRMWARE_DIR: fill vendor/samsung/a3y17lte from proprietary-files.txt.
 # FIRMWARE_DIR is the a3y17lte project's work/firmware (blobs collected from the stock ROM
 # and linux-firmware). Every file is checked against its pinned sha256 before it is copied.
-# Unlike the LineageOS extract_utils this reads no device dump: the list is four firmware files.
+# Unlike the LineageOS extract_utils this reads no device dump: the list is a few firmware files.
 set -euo pipefail
 MY_DIR=$(cd "$(dirname "$0")" && pwd)
 SRC=${1:?usage: extract-files.sh FIRMWARE_DIR}
@@ -18,8 +18,17 @@ while IFS= read -r line; do
 	[ -n "${line// }" ] || continue
 	spec=${line%%|*}; sum=${line#*|}
 	from=${spec%%:*}; to=${spec#*:}
-	echo "$sum  $SRC/$from" | sha256sum -c --quiet - || { echo "sha256 mismatch: $from" >&2; exit 1; }
-	install -D -m644 "$SRC/$from" "$PROP/vendor/$to"
+	if [[ $from == "ath10k-fw("*")" ]]; then
+		# generated: FIRMWARE,OTP -> ath10k container, the sha256 is the result's
+		args=${from#ath10k-fw(}; args=${args%)}
+		mkdir -p "$(dirname "$PROP/vendor/$to")"
+		python3 "$MY_DIR/tools/mk_ath10k_fw.py" "$SRC/${args%%,*}" "$SRC/${args#*,}" "$PROP/vendor/$to"
+		echo "$sum  $PROP/vendor/$to" | sha256sum -c --quiet - || { echo "sha256 mismatch: $to" >&2; exit 1; }
+		chmod 644 "$PROP/vendor/$to"
+	else
+		echo "$sum  $SRC/$from" | sha256sum -c --quiet - || { echo "sha256 mismatch: $from" >&2; exit 1; }
+		install -D -m644 "$SRC/$from" "$PROP/vendor/$to"
+	fi
 	copy+=("vendor/samsung/a3y17lte/proprietary/vendor/$to:\$(TARGET_COPY_OUT_VENDOR)/$to")
 done < "$MY_DIR/proprietary-files.txt"
 

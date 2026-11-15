@@ -146,7 +146,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     hostapd \
     wpa_supplicant \
-    wpa_supplicant_a3y17lte.conf
+    wpa_supplicant_a3y17lte.conf \
+    wpa_supplicant_overlay_a3y17lte.conf
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml \
     frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml

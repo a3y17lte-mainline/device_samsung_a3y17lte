@@ -10,3 +10,12 @@ prebuilt_etc {
     sub_dir: "wifi",
     vendor: true,
 }
+
+// Settings the supplicant reads on top of that file at every start
+prebuilt_etc {
+    name: "wpa_supplicant_overlay_a3y17lte.conf",
+    filename: "wpa_supplicant_overlay.conf",
+    src: "configs/wifi/wpa_supplicant_overlay.conf",
+    sub_dir: "wifi",
+    vendor: true,
+}
