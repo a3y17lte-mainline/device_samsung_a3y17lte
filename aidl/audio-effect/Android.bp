@@ -2,9 +2,10 @@
 
 // AOSP's audio effects service (hardware/interfaces/audio/aidl/default). There it is only
 // built for an APEX that also carries the example core HAL (installable: false, and no
-// filegroup for its sources), so EffectFactory.cpp and EffectMain.cpp are unchanged copies from
-// android-17.0.0_r1. Outside an APEX they look for the config and the effect libraries under
-// /vendor (audio_effects_config.xml, lib64/soundfx).
+// filegroup for its sources), so EffectFactory.cpp and EffectMain.cpp are copies from
+// android-17.0.0_r1; EffectMain.cpp lost its APEX config lookup, which does not compile outside
+// an APEX. The config and the effect libraries are found under /vendor
+// (audio_effects_config.xml, lib64/soundfx).
 cc_binary {
     name: "android.hardware.audio.effect.service-aidl.a3y17lte",
     relative_install_path: "hw",
@@ -12,7 +13,6 @@ cc_binary {
     init_rc: ["android.hardware.audio.effect.service-aidl.a3y17lte.rc"],
     vintf_fragments: ["android.hardware.audio.effect.service-aidl.a3y17lte.xml"],
     shared_libs: [
-        "libapexsupport",
         "libeffectconfig",
     ],
     srcs: [
