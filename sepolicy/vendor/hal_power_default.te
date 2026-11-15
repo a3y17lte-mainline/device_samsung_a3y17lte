@@ -1,0 +1,2 @@
+# CPU boosts: scaling_min_freq / scaling_max_freq of the two cpufreq policies
+allow hal_power_default sysfs_devices_system_cpu:file rw_file_perms;

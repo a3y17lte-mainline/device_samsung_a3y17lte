@@ -87,9 +87,11 @@ BOARD_USES_METADATA_PARTITION := true
 # No AVB: S-Boot does not know vbmeta.
 BOARD_AVB_ENABLE := false
 
-# Recovery (Lineage recovery comes last; RECOVERY holds our U-Boot during bring-up)
+# Recovery (LineageOS recovery on RECOVERY)
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.samsungexynos7870
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
+TARGET_RECOVERY_UI_BRIGHTNESS_FILE := /sys/class/backlight/14800000.dsi.0/brightness
+TARGET_RECOVERY_UI_MAX_BRIGHTNESS_FILE := /sys/class/backlight/14800000.dsi.0/max_brightness
 
 # Display / graphics: Exynos DRM + our Mesa (external/mesa, upstream's meson-based Android.mk)
 # with Panfrost only: GLES 3.1, no Vulkan (panvk does not support Midgard), no libgbm (neither

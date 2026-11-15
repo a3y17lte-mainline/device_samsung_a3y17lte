@@ -1,0 +1,4 @@
+# The Type-C port (/sys/class/typec) sits under the USB-C controller's I2C bus, which is
+# labelled sysfs_batteryinfo as a whole (see genfs_contexts)
+r_dir_file(hal_usb_default, sysfs_batteryinfo)
+allow hal_usb_default sysfs_batteryinfo:file w_file_perms;
