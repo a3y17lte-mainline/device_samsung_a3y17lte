@@ -20,6 +20,12 @@
 
     <!-- Torch: RT8547 via the flash LED class device (needs a lights/torch path; camera HAL absent) -->
 
+    <!-- No wallpaper zoom. The default keeps the wallpaper scaled up by 1.1 for its zoom
+         effect; the display planes cannot scale, so that one layer sent the whole home screen
+         (wallpaper, launcher, status bar) back to GPU composition on top of the launcher's own
+         drawing: 11-20 ms of GPU time per frame in the app drawer animation. -->
+    <item name="config_wallpaperMaxScale" format="float" type="dimen">1</item>
+
     <!-- 2 GB RAM -->
     <bool name="config_lowRamTaskSnapshotsAndRecents">false</bool>
     <bool name="config_supportsSplitScreenMultiWindow">true</bool>
