@@ -29,10 +29,20 @@ constexpr int kBoostFloorKhz = 1000000;  // boost to the first frequency at or a
 
 // The GPU (Panfrost devfreq, simple_ondemand). Since the display planes took composition off
 // the GPU, an app's own drawing is too little load to raise the frequency, and its frames get
-// slow: 21 ms median in a list scroll at the governor's choice (mostly 545-676 MHz), 14 ms
-// with a floor of 845 MHz. Frequencies in Hz.
+// slow. Measured with a fixed minimum (list scroll in Settings, three runs each; janky frames,
+// 95th percentile frame time, energy per frame by the OPPs' voltage squared):
+//   343 MHz 15.3% 57 ms 1.00    545 MHz 13.4% 49 ms 1.00    676 MHz 11.0% 55 ms 1.17
+//   728 MHz 10.4% 59 ms 1.36    845 MHz  6.3% 34 ms 1.52   (1001 MHz, one run: 7.3%, 1.80)
+// Flings over a long web page only react to 845 MHz too (median 28 -> 21 ms). So:
+//   - always: 545 MHz, the highest frequency at the lowest voltage: the same work for the same
+//     energy, only sooner;
+//   - interaction boosts: 845 MHz, the one step that removes the slow frames;
+//   - launches: the highest.
+// The launcher's drawer, the notification shade and cold starts did not react to any of it.
+// Frequencies in Hz.
 constexpr const char* kGpu = "/sys/class/devfreq/11400000.gpu";
-constexpr int kGpuBoostFloorHz = 800000000;  // boost to the first frequency at or above this
+constexpr int kGpuBaseCeilHz = 545000000;    // idle: the last frequency at or below this
+constexpr int kGpuBoostFloorHz = 800000000;  // boost: the first frequency at or above this
 constexpr int kDefaultBoostMs = 100;
 constexpr int kMaxBoostMs = 2000;
 constexpr auto kLaunchMax = 5s;  // in case the framework never ends a launch
@@ -125,11 +135,13 @@ bool Power::loadGpuFrequenciesLocked() {
     if (table.empty()) return false;
     std::sort(table.begin(), table.end());
 
-    mGpuMinHz = table.front();
     mGpuMaxHz = table.back();
+    auto base = std::upper_bound(table.begin(), table.end(), kGpuBaseCeilHz);
+    mGpuBaseHz = base != table.begin() ? *(base - 1) : table.front();
     auto boost = std::lower_bound(table.begin(), table.end(), kGpuBoostFloorHz);
     mGpuBoostHz = boost != table.end() ? *boost : mGpuMaxHz;
-    LOG(INFO) << "GPU " << mGpuMinHz << "-" << mGpuMaxHz << " Hz, boost " << mGpuBoostHz;
+    LOG(INFO) << "GPU minimum " << mGpuBaseHz << " Hz, boost " << mGpuBoostHz << ", launch "
+              << mGpuMaxHz;
     return true;
 }
 
@@ -139,7 +151,7 @@ void Power::applyLocked(Clock::time_point now) {
     const bool boost = boosts && now < mBoostEnd;
 
     if (loadGpuFrequenciesLocked()) {
-        const int gpuMin = launch ? mGpuMaxHz : boost ? mGpuBoostHz : mGpuMinHz;
+        const int gpuMin = launch ? mGpuMaxHz : boost ? mGpuBoostHz : mGpuBaseHz;
         if (gpuMin != mWrittenGpuMin) {
             const std::string path = std::string(kGpu) + "/min_freq";
             if (!::android::base::WriteStringToFile(std::to_string(gpuMin), path)) {

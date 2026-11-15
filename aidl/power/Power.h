@@ -18,7 +18,7 @@ namespace aidl::android::hardware::power::a3y17lte {
 //
 //   Boost INTERACTION     minimum = kBoostKhz for the given time
 //   Mode LAUNCH           minimum = highest frequency while on (kLaunchMax at the longest)
-//   (both also raise the GPU's devfreq minimum: boost frequency / highest frequency)
+//   (both also raise the GPU's devfreq minimum, see Power.cpp)
 //   Mode LOW_POWER        maximum = kBoostKhz, boosts ignored
 //   Mode INTERACTIVE off, DEVICE_IDLE on: boosts ignored
 //
@@ -81,7 +81,7 @@ class Power : public BnPower {
     int mWrittenMax = 0;
 
     // GPU devfreq: the same for its minimum, in Hz
-    int mGpuMinHz = 0;
+    int mGpuBaseHz = 0;
     int mGpuMaxHz = 0;
     int mGpuBoostHz = 0;
     int mWrittenGpuMin = 0;
