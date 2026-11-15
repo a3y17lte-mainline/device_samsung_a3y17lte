@@ -10,6 +10,11 @@ dalvik.vm.madvise.artfile.size=0
 # aborted on LE_ADV_FILTER 0xfd57 answered as opcode 0x0157)
 bluetooth.core.le.vendor_capabilities.enabled=false
 
+# Codec2: AIDL. Below vendor API 202404 the default is HIDL, and without hwservicemanager that
+# finds no software codecs: only the in-process AAC decoder was left, so every other sound
+# (notifications, ringtones, most media) failed to decode.
+media.c2.hal.selection=aidl
+
 # Wi-Fi
 wifi.interface=wlan0
 
