@@ -61,6 +61,9 @@ TARGET_USERIMAGES_USE_F2FS := true
 # Dynamic partitions: super lives on the PIT partition SYSTEM (mmcblk0p19).
 # Non-A/B, no virtual A/B. androidboot.super_partition=SYSTEM comes from the bootconfig.
 # VERIFY with lpdump after the first build: block device name and super name.
+# Android 17 defaults an unset AB_OTA_UPDATER to true (board_config.mk); non-A/B needs an
+# explicit false (it also selects the edify updater for the recovery OTA package).
+AB_OTA_UPDATER := false
 BOARD_SUPER_PARTITION_SIZE := 4194304000
 BOARD_SUPER_PARTITION_BLOCK_DEVICES := SYSTEM
 BOARD_SUPER_PARTITION_SYSTEM_DEVICE_SIZE := 4194304000
