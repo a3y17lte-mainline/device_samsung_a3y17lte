@@ -170,12 +170,18 @@ PRODUCT_COPY_FILES += \
 # NFC (Samsung S3NRN80): our HAL (aidl/nfc) passes NCI packets between Android's NFC stack and
 # the kernel's raw NCI device (/dev/s3fwrn5). Reader mode and host card emulation; no eSE (it
 # is behind the secure world), no UICC. The chip's firmware is never written.
+# Switched off for now (2026-11-15): the HAL and chip work (NCI 1.0 came up on the first boot),
+# but after an ANR kill every restart of the persistent NFC app hung during startup and froze
+# the phone. Without the features the NFC app does not start its service. Re-enable to debug.
+A3_ENABLE_NFC ?= false
+ifeq ($(A3_ENABLE_NFC),true)
 PRODUCT_PACKAGES += \
     android.hardware.nfc-service.a3y17lte
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.nfc.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.xml \
     frameworks/native/data/etc/android.hardware.nfc.hce.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.hce.xml \
     frameworks/native/data/etc/com.nxp.mifare.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.nxp.mifare.xml
+endif
 
 # Later: camera flash.
 # Out of scope for now: RIL/modem, camera, GNSS, fingerprint.
