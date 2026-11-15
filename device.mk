@@ -100,12 +100,9 @@ PRODUCT_VENDOR_PROPERTIES += \
     debug.renderengine.backend=skiaglthreaded \
     debug.hwui.renderer=skiagl
 
-# Shared memory through memfd: ACK 6.18 has only the Rust ashmem driver (not built), and
-# libcutils picks memfd on its own only for vendor API level >= 202604 (ours is 23, the
-# shipping level). Without it system_server dies at "Failed to create ashmem". The property
-# is system-owned (vendor init may not set use_memfd_prop), so it goes on product.
-PRODUCT_PRODUCT_PROPERTIES += \
-    sys.use_memfd=true
+# Shared memory: ashmem (the kernel's C driver, ANDROID: patch), the default for our vendor
+# API level (23). Fallback if ashmem misbehaves: PRODUCT_PRODUCT_PROPERTIES += sys.use_memfd=true
+# (system-owned property: vendor may not set it).
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml
