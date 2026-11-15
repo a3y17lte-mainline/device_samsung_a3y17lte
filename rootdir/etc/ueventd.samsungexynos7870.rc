@@ -37,6 +37,9 @@ firmware_directories /vendor/firmware/
 /sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_proximity_en         0660 system system
 /sys/devices/platform/soc@0/13930000.spi/spi_master/spi*/spi*/ssp-*/iio:device*  scan_elements/in_timestamp_en         0660 system system
 
+# GPU devfreq minimum (Panfrost is a module), for the power HAL's boosts
+/sys/devices/platform/soc@0/11400000.gpu/devfreq/11400000.gpu  min_freq  0664 system system
+
 # Touch-key backlight (tm2-touchkey is a module), for the light HAL
 /sys/devices/platform/i2c-touchkey/i2c-*/*/leds/tm2-touchkey  brightness  0664 system system
 

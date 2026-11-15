@@ -1,2 +1,7 @@
 # CPU boosts: scaling_min_freq / scaling_max_freq of the two cpufreq policies
 allow hal_power_default sysfs_devices_system_cpu:file rw_file_perms;
+
+# GPU boosts: min_freq of the Panfrost devfreq device
+allow hal_power_default sysfs_a3_devfreq:dir r_dir_perms;
+allow hal_power_default sysfs_a3_devfreq:file rw_file_perms;
+allow hal_power_default sysfs_a3_devfreq:lnk_file read;
