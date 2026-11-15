@@ -37,6 +37,9 @@ BOARD_KERNEL_PAGESIZE := 2048
 BOARD_BOOT_HEADER_VERSION := 0
 BOARD_RAMDISK_USE_XZ := true
 BOARD_CUSTOM_BOOTIMG_MK := $(DEVICE_PATH)/bootimg.mk
+# Copy our packed boot/recovery images into target-files BOOTABLE_IMAGES/: without it the OTA
+# tools repack boot.img with plain mkbootimg (no DTBH dt.img, no bootconfig, no SEANDROID).
+BOARD_CUSTOM_BOOTIMG := true
 BOARD_A3_BOOTCONFIG := $(DEVICE_PATH)/bootconfig.txt
 # Recovery: display, USB gadget and gpio-keys are built in; touch screen and touch keys are
 # modules (loaded from modules.load.recovery).
