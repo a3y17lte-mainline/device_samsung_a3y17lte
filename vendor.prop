@@ -1,8 +1,7 @@
 # Display: 720x1280 AMOLED, 4.7"
 ro.sf.lcd_density=320
 
-# Low-RAM tuning (2 GB)
-ro.lmk.use_minfree_levels=true
+# Low-RAM tuning (2 GB). lmkd uses its PSI strategy (the minfree-levels one needs memcg v1).
 dalvik.vm.madvise.vdexfile.size=31457280
 dalvik.vm.madvise.odexfile.size=31457280
 dalvik.vm.madvise.artfile.size=0
