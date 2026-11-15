@@ -1,0 +1,5 @@
+# The battery level on the recovery screen: the power supplies sit under their I2C buses,
+# whose whole subtree is labelled sysfs_batteryinfo (genfs_contexts); the platform policy
+# only gives recovery the files. Without this the log fills with denials (dozens a second).
+allow recovery sysfs_batteryinfo:dir r_dir_perms;
+allow recovery sysfs_batteryinfo:lnk_file read;
