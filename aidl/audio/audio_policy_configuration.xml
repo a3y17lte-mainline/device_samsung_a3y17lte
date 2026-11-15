@@ -8,7 +8,7 @@
     Devices: loudspeaker (TFA9896), earpiece and headphones (COD3026X), MIC1 (main, bottom),
     MIC2 (second, top), MIC3 (headset). Routing: mixer_paths.xml.
 -->
-<audioPolicyConfiguration version="1.0">
+<audioPolicyConfiguration version="1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
     <globalConfiguration speaker_drc_enabled="false"/>
 
     <modules>
@@ -128,4 +128,8 @@
             </routes>
         </module>
     </modules>
+
+    <!-- Volume steps and curves (frameworks/av/services/audiopolicy/config) -->
+    <xi:include href="audio_policy_volumes.xml"/>
+    <xi:include href="default_volume_tables.xml"/>
 </audioPolicyConfiguration>

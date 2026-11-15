@@ -74,6 +74,11 @@ PRODUCT_PACKAGES += \
     libvisualizeraidl \
     audio_policy_configuration_a3y17lte.xml \
     mixer_paths_a3y17lte.xml
+# Stock volume steps and curves, included by audio_policy_configuration.xml. Without them the HAL
+# reports no volume groups and media volume had the range 0..0 (could not be changed).
+PRODUCT_COPY_FILES += \
+    frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml \
+    frameworks/av/services/audiopolicy/config/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml
 # (audio output and microphone features come from handheld_core_hardware.xml)
 
 # Input
