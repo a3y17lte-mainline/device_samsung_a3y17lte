@@ -31,26 +31,16 @@ ndk::ScopedAStatus StreamA3::setConnectedDevices(const std::vector<AudioDevice>&
         return ndk::ScopedAStatus::fromExceptionCode(EX_UNSUPPORTED_OPERATION);
     }
     RETURN_STATUS_IF_ERROR(StreamCommonImpl::setConnectedDevices(devices));
+    // Every device is the same PCM, so a running stream keeps running: only the mixer routing
+    // changes. (Holding back the I/O until a restart, as the USB streams do, stalled the stream
+    // for good: nothing restarts it, the PCM underran and audio was dead.)
     AudioRouter::getInstance().setDevices(mIsInput, devices);
     mHasDevices.store(!devices.empty(), std::memory_order_release);
-    mConnectedDevicesUpdated.store(true, std::memory_order_release);
     return ndk::ScopedAStatus::ok();
-}
-
-::android::status_t StreamA3::transfer(void* buffer, size_t frameCount, size_t* actualFrameCount,
-                                       int32_t* latencyMs) {
-    if (mConnectedDevicesUpdated.load(std::memory_order_acquire)) {
-        // 'setConnectedDevices' was called: I/O restarts with the new routing.
-        *actualFrameCount = 0;
-        *latencyMs = StreamDescriptor::LATENCY_UNKNOWN;
-        return ::android::OK;
-    }
-    return StreamAlsa::transfer(buffer, frameCount, actualFrameCount, latencyMs);
 }
 
 // Every device is the same PCM: one proxy, whatever is connected.
 std::vector<alsa::DeviceProfile> StreamA3::getDeviceProfiles() {
-    mConnectedDevicesUpdated.store(false, std::memory_order_release);
     const int card = AudioRouter::getInstance().getCard();
     if (card < 0 || !mHasDevices.load(std::memory_order_acquire)) return {};
     return {alsa::DeviceProfile{.card = card,

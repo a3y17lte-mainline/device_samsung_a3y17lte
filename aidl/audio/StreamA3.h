@@ -15,17 +15,12 @@ class StreamA3 : public StreamAlsa {
   public:
     StreamA3(StreamContext* context, const Metadata& metadata);
 
-    // Methods of 'DriverInterface'.
-    ::android::status_t transfer(void* buffer, size_t frameCount, size_t* actualFrameCount,
-                                 int32_t* latencyMs) override;
-
     // Overridden methods of 'StreamCommonImpl', called on a Binder thread.
     ndk::ScopedAStatus setConnectedDevices(const ConnectedDevices& devices) override;
 
   protected:
     std::vector<alsa::DeviceProfile> getDeviceProfiles() override;
 
-    std::atomic<bool> mConnectedDevicesUpdated = false;
     std::atomic<bool> mHasDevices = false;  // read on the worker thread
 };
 
