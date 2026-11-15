@@ -55,6 +55,11 @@ ChildInterface<Module> createModule(const std::string& name,
 
 }  // namespace
 
+// From android.hardware.bluetooth.audio-impl: registers IBluetoothAudioProviderFactory/default,
+// which its VINTF fragment declares. Nothing else starts it on an AIDL-only device, and the
+// Bluetooth stack waits for a declared provider forever (no profiles, no scanning).
+extern "C" binder_status_t createIBluetoothAudioProviderFactory();
+
 int main() {
     // The implementation uses random values (e.g. port ids).
     std::srand(std::time(nullptr));
@@ -69,6 +74,10 @@ int main() {
     const std::string configFqn = std::string().append(Config::descriptor).append("/default");
     if (AServiceManager_addService(config->asBinder().get(), configFqn.c_str()) != STATUS_OK) {
         LOG(ERROR) << "failed to register service for \"" << configFqn << "\"";
+    }
+
+    if (createIBluetoothAudioProviderFactory() != STATUS_OK) {
+        LOG(ERROR) << "failed to register the Bluetooth audio provider factory";
     }
 
     std::vector<ChildInterface<Module>> moduleInstances;
