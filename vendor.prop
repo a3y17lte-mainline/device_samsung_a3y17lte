@@ -6,6 +6,10 @@ dalvik.vm.madvise.vdexfile.size=31457280
 dalvik.vm.madvise.odexfile.size=31457280
 dalvik.vm.madvise.artfile.size=0
 
+# Bluetooth: the QCA9377 firmware does not implement Google's LE vendor commands (the stack
+# aborted on LE_ADV_FILTER 0xfd57 answered as opcode 0x0157)
+bluetooth.core.le.vendor_capabilities.enabled=false
+
 # Wi-Fi
 wifi.interface=wlan0
 
