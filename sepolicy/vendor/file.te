@@ -3,7 +3,8 @@ type sysfs_a3_leds, sysfs_type, fs_type;
 type sysfs_a3_sensors, sysfs_type, fs_type;
 type sysfs_a3_devfreq, sysfs_type, fs_type;
 
-# Modem: the NV working copy and the firmware files on /data (modem-setup.sh), EFS mounted
-# read-only (mount context), the RADIO and EFS partitions
+# Modem: the NV working copy and the firmware files on /data (modem-setup.sh)
 type vendor_modem_data_file, file_type, data_file_type;
-type a3_efs_file, file_type, fs_type;
+# EFS, mounted read-only with this one label for all its files (context= mount: Samsung's own
+# labels on it mean nothing to this policy). A context mount type is a filesystem type only.
+type a3_efs_file, fs_type, contextmount_type;

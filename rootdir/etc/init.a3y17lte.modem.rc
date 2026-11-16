@@ -7,12 +7,21 @@ on post-fs-data
     mount ext4 /dev/block/by-name/EFS /mnt/vendor/efs ro nosuid nodev noexec noload,context=u:object_r:a3_efs_file:s0
     mkdir /data/vendor/modem 0770 radio radio
     mkdir /data/vendor/modem/nv 0700 radio radio
-    mkdir /data/vendor/modem/firmware 0750 radio radio
-    mkdir /data/vendor/modem/firmware/samsung 0750 radio radio
-    mkdir /data/vendor/modem/firmware/samsung/a3y17lte 0750 radio radio
-    exec_start vendor.modem-setup
+    mkdir /data/vendor/modem/firmware 0750 root radio
+    mkdir /data/vendor/modem/firmware/samsung 0750 root radio
+    mkdir /data/vendor/modem/firmware/samsung/a3y17lte 0750 root radio
+    exec_start vendor.modem-setup-nv
+    exec_start vendor.modem-setup-firmware
 
-service vendor.modem-setup /vendor/bin/modem-setup.sh
+# The NV files on EFS belong to radio: copied as radio
+service vendor.modem-setup-nv /vendor/bin/modem-setup.sh nv
+    user radio
+    group radio
+    oneshot
+    disabled
+
+# The RADIO partition is root's: read as root, into root's firmware directory
+service vendor.modem-setup-firmware /vendor/bin/modem-setup.sh firmware
     user root
     group root radio
     oneshot
