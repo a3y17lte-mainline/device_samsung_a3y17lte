@@ -27,18 +27,30 @@ class AudioRouter {
     void setDevices(bool isInput,
                     const std::vector<::aidl::android::media::audio::common::AudioDevice>& devices);
 
+    // A phone call: the modem's downlink joins the mixer and its uplink comes from the codec.
+    // The call follows the output devices (earpiece when there are none) and takes the
+    // matching microphone unless a capture stream has chosen one.
+    void setCallActive(bool active);
+
+    // Call volume, 0.0 to 1.0: the level of the modem's downlink in the mixer.
+    void setVoiceVolume(float volume);
+
   private:
     AudioRouter() = default;
 
     int findCardLocked();
     bool initLocked();
     void applyLocked();
+    void applyVoiceVolumeLocked();
 
     std::mutex mLock;
     int mCard = -1;
     audio_route* mRoute = nullptr;
     std::vector<std::string> mOutputPaths;
     std::vector<std::string> mInputPaths;
+    bool mHeadsetOutput = false;
+    bool mCallActive = false;
+    float mVoiceVolume = 1.0f;
 };
 
 }  // namespace aidl::android::hardware::audio::core::a3y17lte

@@ -6,10 +6,13 @@
 
 #include <Log.h>
 #include <audio_route/audio_route.h>
+#include <tinyalsa/asoundlib.h>
 
 #include <unistd.h>
 
+#include <algorithm>
 #include <climits>
+#include <cmath>
 #include <cstdio>
 
 using aidl::android::media::audio::common::AudioDevice;
@@ -88,12 +91,51 @@ void AudioRouter::applyLocked() {
     audio_route_reset(mRoute);
     for (const auto& path : mOutputPaths) audio_route_apply_path(mRoute, path.c_str());
     for (const auto& path : mInputPaths) audio_route_apply_path(mRoute, path.c_str());
+    if (mCallActive) {
+        audio_route_apply_path(mRoute, "call");
+        if (mOutputPaths.empty()) audio_route_apply_path(mRoute, "earpiece");
+        if (mOutputPaths.empty() || mOutputPaths == std::vector<std::string>{"earpiece"}) {
+            audio_route_apply_path(mRoute, "call-earpiece");
+        }
+        if (mInputPaths.empty()) {
+            audio_route_apply_path(mRoute, mHeadsetOutput ? "headset-mic" : "call-main-mic");
+        }
+    }
     audio_route_update_mixer(mRoute);
+    if (mCallActive) applyVoiceVolumeLocked();
+}
+
+// "Modem Playback Volume" is 0 to 7, 7 = 0 dB. It is in no mixer path, so libaudioroute
+// leaves it alone. The lowest steps are too quiet to be of use.
+void AudioRouter::applyVoiceVolumeLocked() {
+    if (mCard < 0) return;
+    struct mixer* mixer = mixer_open(mCard);
+    if (mixer == nullptr) return;
+    if (struct mixer_ctl* ctl = mixer_get_ctl_by_name(mixer, "Modem Playback Volume")) {
+        mixer_ctl_set_value(ctl, 0, 2 + static_cast<int>(std::lround(mVoiceVolume * 5)));
+    }
+    mixer_close(mixer);
+}
+
+void AudioRouter::setCallActive(bool active) {
+    std::lock_guard lock(mLock);
+    if (mCallActive == active) return;
+    mCallActive = active;
+    LOG(INFO) << __func__ << ": " << active;
+    applyLocked();
+}
+
+void AudioRouter::setVoiceVolume(float volume) {
+    std::lock_guard lock(mLock);
+    mVoiceVolume = std::min(1.0f, std::max(0.0f, volume));
+    if (mCallActive) applyVoiceVolumeLocked();
 }
 
 void AudioRouter::setDevices(bool isInput, const std::vector<AudioDevice>& devices) {
     std::vector<std::string> paths;
+    bool headset = false;
     for (const auto& device : devices) {
+        headset |= device.type.type == AudioDeviceType::OUT_HEADSET;
         if (std::string path = pathFor(device); !path.empty()) {
             paths.push_back(path);
         } else {
@@ -103,6 +145,7 @@ void AudioRouter::setDevices(bool isInput, const std::vector<AudioDevice>& devic
 
     std::lock_guard lock(mLock);
     (isInput ? mInputPaths : mOutputPaths) = std::move(paths);
+    if (!isInput) mHeadsetOutput = headset;
     applyLocked();
 }
 
