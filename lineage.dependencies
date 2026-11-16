@@ -10,5 +10,17 @@
     "repository": "a3y17lte-mainline/vendor_samsung_a3y17lte",
     "target_path": "vendor/samsung/a3y17lte",
     "branch": "lineage-24.0"
+  },
+  {
+    "remote": "github",
+    "repository": "a3y17lte-mainline/hardware_samsung_shannond",
+    "target_path": "hardware/samsung/shannond",
+    "branch": "main"
+  },
+  {
+    "remote": "github",
+    "repository": "a3y17lte-mainline/external_libsamsung-ipc",
+    "target_path": "external/libsamsung-ipc",
+    "branch": "a3y17lte"
   }
 ]

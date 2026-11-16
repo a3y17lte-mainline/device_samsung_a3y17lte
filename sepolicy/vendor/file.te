@@ -2,3 +2,8 @@ type sysfs_a3_backlight, sysfs_type, fs_type;
 type sysfs_a3_leds, sysfs_type, fs_type;
 type sysfs_a3_sensors, sysfs_type, fs_type;
 type sysfs_a3_devfreq, sysfs_type, fs_type;
+
+# Modem: the NV working copy and the firmware files on /data (modem-setup.sh), EFS mounted
+# read-only (mount context), the RADIO and EFS partitions
+type vendor_modem_data_file, file_type, data_file_type;
+type a3_efs_file, file_type, fs_type;

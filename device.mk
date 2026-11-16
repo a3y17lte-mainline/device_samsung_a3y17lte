@@ -188,8 +188,30 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/com.nxp.mifare.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.nxp.mifare.xml
 endif
 
+# Radio (Shannon 315 modem, mainline WWAN driver): our radio HAL (shannond's AIDL front end,
+# no Samsung userspace). The kernel starts the modem from the firmware image and NV working
+# copy that modem-setup.sh prepares on /data (the NV data comes from EFS, read-only). Off
+# until it has been tested on the phone: needs the modem series in the Android kernel,
+# shannond + libsamsung-ipc in the tree (local manifest), and the user's go for the first
+# start with the SIM.
+A3_ENABLE_RADIO ?= false
+ifeq ($(A3_ENABLE_RADIO),true)
+PRODUCT_PACKAGES += \
+    android.hardware.radio-service.a3y17lte \
+    modem-setup.sh
+PRODUCT_COPY_FILES += \
+    $(DEVICE_PATH)/rootdir/etc/init.a3y17lte.modem.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.a3y17lte.modem.rc \
+    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.gsm.xml
+# LTE/WCDMA/GSM
+PRODUCT_VENDOR_PROPERTIES += \
+    ro.telephony.default_network=9
+else
+PRODUCT_PACKAGES += \
+    FrameworksResA3y17lteNoTelephony
+endif
+
 # Later: camera flash.
-# Out of scope for now: RIL/modem, camera, GNSS, fingerprint.
+# Out of scope for now: camera, GNSS, fingerprint.
 
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \

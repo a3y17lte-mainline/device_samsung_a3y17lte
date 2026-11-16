@@ -1,0 +1,5 @@
+# EFS mounted read-only for modem-setup.sh (init.a3y17lte.modem.rc), with one label for all
+# its files (mount context): Samsung's own labels on it mean nothing to this policy
+allow init a3_efs_block_device:blk_file r_file_perms;
+allow init mnt_vendor_file:dir mounton;
+allow init a3_efs_file:filesystem { mount relabelfrom relabelto };

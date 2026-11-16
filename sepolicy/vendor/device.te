@@ -1,1 +1,3 @@
 # /dev/dri is labelled gpu_device by the platform policy; nothing device-specific yet.
+type a3_radio_block_device, dev_type;
+type a3_efs_block_device, dev_type;

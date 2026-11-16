@@ -1,0 +1,4 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="android.overlay.a3y17lte.notelephony">
+    <overlay android:targetPackage="android" android:isStatic="true" android:priority="1" />
+</manifest>

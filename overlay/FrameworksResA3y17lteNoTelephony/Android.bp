@@ -1,0 +1,6 @@
+// The framework's telephony switches while the radio is not built
+// (A3_ENABLE_RADIO in device.mk)
+runtime_resource_overlay {
+    name: "FrameworksResA3y17lteNoTelephony",
+    vendor: true,
+}

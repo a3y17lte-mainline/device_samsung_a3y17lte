@@ -19,3 +19,12 @@ prebuilt_etc {
     sub_dir: "wifi",
     vendor: true,
 }
+
+// Prepares the modem's NV working copy and firmware image on /data before the
+// radio HAL starts (see the script)
+sh_binary {
+    name: "modem-setup.sh",
+    src: "rootdir/bin/modem-setup.sh",
+    vendor: true,
+}
+

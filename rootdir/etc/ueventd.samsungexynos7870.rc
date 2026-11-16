@@ -53,3 +53,6 @@ firmware_directories /vendor/firmware/
 
 # Vibrator / input
 /dev/input/event*         0660   system     input
+
+# Modem: the Samsung IPC ports of the WWAN driver, for the radio HAL
+/dev/wwan0sipc*           0660   radio      radio

@@ -1,0 +1,19 @@
+# Modem (radio HAL, installed with A3_ENABLE_RADIO): EFS strictly read-only ("noload": ext4
+# does not replay its journal, so no block is written), the NV working copy and the firmware
+# files the kernel loads (kernel.firmware_class.path in bootconfig.txt). modem-setup.sh runs
+# before class hal starts, so the files exist when the radio HAL opens the IPC port.
+on post-fs-data
+    mkdir /mnt/vendor/efs 0700 radio radio
+    mount ext4 /dev/block/by-name/EFS /mnt/vendor/efs ro nosuid nodev noexec noload,context=u:object_r:a3_efs_file:s0
+    mkdir /data/vendor/modem 0770 radio radio
+    mkdir /data/vendor/modem/nv 0700 radio radio
+    mkdir /data/vendor/modem/firmware 0750 radio radio
+    mkdir /data/vendor/modem/firmware/samsung 0750 radio radio
+    mkdir /data/vendor/modem/firmware/samsung/a3y17lte 0750 radio radio
+    exec_start vendor.modem-setup
+
+service vendor.modem-setup /vendor/bin/modem-setup.sh
+    user root
+    group root radio
+    oneshot
+    disabled
