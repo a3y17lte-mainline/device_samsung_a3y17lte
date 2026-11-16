@@ -3,8 +3,8 @@
 # "nv" as radio, "firmware" as root (each owns what it reads and writes; no DAC overrides).
 #
 # The kernel starts the modem itself when the radio HAL opens the IPC port: it
-# loads the firmware image and the NV data from /data/vendor/modem/firmware
-# (kernel.firmware_class.path in bootconfig.txt; the DT's firmware-name).
+# loads the firmware image and the NV data through the links in
+# /vendor/firmware/samsung/a3y17lte (the DT's firmware-name) to the files here.
 #
 # - On the first boot it copies the modem's NV data files from EFS (mounted
 #   read-only with noload by init: not a block of EFS is written) to the
@@ -12,7 +12,7 @@
 #   writes through the HAL's RFS service. EFS itself is never written.
 # - On the first boot it copies the firmware image from the RADIO partition
 #   (a read; 37 MiB covers the table of contents, the loader and the firmware).
-# - It links modem-nv.bin to the working copy, so every modem start loads the
+# - The NV link goes to the working copy itself, so every modem start loads the
 #   current NV data.
 #
 # The working copy holds the IMEI and the radio calibration. Delete
@@ -54,8 +54,6 @@ firmware)
         mv "$FW/modem.bin.tmp" "$FW/modem.bin" || exit 1
         say "firmware image copied from RADIO"
     fi
-    # The kernel loads the current NV data on every modem start
-    ln -sf "$NV/nv_data.bin" "$FW/modem-nv.bin"
     ;;
 *)
     echo "usage: modem-setup.sh nv|firmware" >&2

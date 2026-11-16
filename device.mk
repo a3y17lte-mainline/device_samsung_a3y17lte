@@ -198,6 +198,8 @@ A3_ENABLE_RADIO ?= false
 ifeq ($(A3_ENABLE_RADIO),true)
 PRODUCT_PACKAGES += \
     android.hardware.radio-service.a3y17lte \
+    modem-firmware-link \
+    modem-nv-link \
     modem-setup.sh
 PRODUCT_COPY_FILES += \
     $(DEVICE_PATH)/rootdir/etc/init.a3y17lte.modem.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.a3y17lte.modem.rc \

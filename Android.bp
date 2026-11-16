@@ -28,3 +28,21 @@ sh_binary {
     vendor: true,
 }
 
+// The modem's firmware image and NV data, as the kernel requests them (the DT's
+// firmware-name): S-Boot passes firmware_class.path=/vendor/firmware, so the files are
+// links from there to what modem-setup.sh prepares on /data. The kernel reads them itself
+// (partial firmware reads have no ueventd fallback) and follows the links.
+install_symlink {
+    name: "modem-firmware-link",
+    vendor: true,
+    installed_location: "firmware/samsung/a3y17lte/modem.bin",
+    symlink_target: "/data/vendor/modem/firmware/samsung/a3y17lte/modem.bin",
+}
+
+install_symlink {
+    name: "modem-nv-link",
+    vendor: true,
+    installed_location: "firmware/samsung/a3y17lte/modem-nv.bin",
+    symlink_target: "/data/vendor/modem/nv/nv_data.bin",
+}
+

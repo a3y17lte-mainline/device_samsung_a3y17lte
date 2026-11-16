@@ -17,7 +17,3 @@ kernel.pd_ignore_unused
 # /dev/kmsg rate-limiting init's own log lines.
 kernel.sysctl.kernel.printk = "8 4 1 7"
 kernel.printk.devkmsg = on
-# The modem's firmware image and NV data (radio HAL, modem-setup.sh): the kernel reads them
-# itself (partial firmware reads have no ueventd fallback); other firmware still comes
-# from ueventd's firmware_directories
-kernel.firmware_class.path = "/data/vendor/modem/firmware"
