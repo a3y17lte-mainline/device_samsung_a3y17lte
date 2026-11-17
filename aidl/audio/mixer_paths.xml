@@ -62,42 +62,54 @@
     <!--
         A phone call, on top of the output and input paths: the modem's downlink into the
         mixer and the codec's capture as its uplink. The modem plays on the left channel
-        only, so the codec copies left to both (stock: "MonoMix Mode" L for every output).
-        Gains per output are stock Android's (mixer_gains.xml, incall_nb-*); the handset
-        microphone gain is the one tested on this phone.
+        only, so the codec copies left to both ("MonoMix Mode" L in stock, for every output).
+
+        Routes and gains are stock Android's for a call (mixer_paths.xml and mixer_gains.xml,
+        incall_nb-*). The vendor driver's volume controls have our scales, except the digital
+        DAC and ADC volumes, which are one step higher there (127 there is 126 here).
+        Handset and speaker calls send both microphones, main on the left channel and second
+        on the right: the modem's noise suppression works on the pair.
     -->
     <path name="call">
         <ctl name="DMIX Modem Switch" value="1" />
         <ctl name="Modem Uplink Source" value="Codec" />
         <ctl name="Mono Mix" value="Left" />
+        <ctl name="DAC Playback Volume" value="126" />
     </path>
 
     <path name="call-handset">
         <ctl name="Earpiece Playback Volume" value="2" />
     </path>
 
-    <!-- The speaker and the headphones play a call at their media level -->
     <path name="call-speaker">
     </path>
 
     <path name="call-headset">
+        <ctl name="Headphone Playback Volume" value="32" />
     </path>
 
     <path name="call-headphone">
+        <ctl name="Headphone Playback Volume" value="32" />
     </path>
 
     <path name="call-handset-mic">
         <ctl name="ADCL Mixer MIC1 Switch" value="1" />
-        <ctl name="ADCR Mixer MIC1 Switch" value="1" />
-        <ctl name="MIC1 Volume" value="11" />
-        <ctl name="MIC1 Boost Volume" value="2" />
+        <ctl name="ADCR Mixer MIC2 Switch" value="1" />
+        <ctl name="MIC1 Volume" value="16" />
+        <ctl name="MIC1 Boost Volume" value="1" />
+        <ctl name="MIC2 Volume" value="16" />
+        <ctl name="MIC2 Boost Volume" value="1" />
+        <ctl name="ADC Capture Volume" value="126" />
     </path>
 
     <path name="call-speaker-mic">
         <ctl name="ADCL Mixer MIC1 Switch" value="1" />
-        <ctl name="ADCR Mixer MIC1 Switch" value="1" />
+        <ctl name="ADCR Mixer MIC2 Switch" value="1" />
         <ctl name="MIC1 Volume" value="13" />
         <ctl name="MIC1 Boost Volume" value="2" />
+        <ctl name="MIC2 Volume" value="13" />
+        <ctl name="MIC2 Boost Volume" value="2" />
+        <ctl name="ADC Capture Volume" value="126" />
     </path>
 
     <path name="call-headset-mic">
@@ -105,6 +117,7 @@
         <ctl name="ADCR Mixer MIC3 Switch" value="1" />
         <ctl name="MIC3 Volume" value="11" />
         <ctl name="MIC3 Boost Volume" value="1" />
+        <ctl name="ADC Capture Volume" value="132" />
     </path>
 
     <path name="call-headphone-mic">
@@ -112,5 +125,6 @@
         <ctl name="ADCR Mixer MIC1 Switch" value="1" />
         <ctl name="MIC1 Volume" value="16" />
         <ctl name="MIC1 Boost Volume" value="1" />
+        <ctl name="ADC Capture Volume" value="126" />
     </path>
 </mixer>
