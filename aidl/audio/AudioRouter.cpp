@@ -110,10 +110,12 @@ void AudioRouter::applyLocked() {
 }
 
 // The modem sets the call's level itself (as with stock, where the mixer stays at 0 dB): the
-// radio HAL passes this on, a level from 0 to 5.
+// radio HAL passes this on, a level from 0 to 5. The stock audio HAL's steps
+// (CscFeature_Audio_ConfigCallVolumeSteps, 5 when unset) and its rounding.
 void AudioRouter::applyVoiceVolumeLocked() {
-    ::android::base::SetProperty(kCallVolumeProperty,
-                                 std::to_string(std::lround(mVoiceVolume * 5)));
+    constexpr int kCallVolumeSteps = 5;
+    const int level = static_cast<int>(mVoiceVolume * kCallVolumeSteps + 0.1f);
+    ::android::base::SetProperty(kCallVolumeProperty, std::to_string(level));
 }
 
 void AudioRouter::setCallActive(bool active) {
