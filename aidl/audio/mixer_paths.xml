@@ -72,6 +72,7 @@
     -->
     <path name="call">
         <ctl name="DMIX Modem Switch" value="1" />
+        <ctl name="Modem Playback Volume" value="7" />
         <ctl name="Modem Uplink Source" value="Codec" />
         <ctl name="Mono Mix" value="Left" />
         <ctl name="DAC Playback Volume" value="126" />

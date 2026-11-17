@@ -7,7 +7,6 @@
 #include <Log.h>
 #include <android-base/properties.h>
 #include <audio_route/audio_route.h>
-#include <tinyalsa/asoundlib.h>
 
 #include <unistd.h>
 
@@ -15,6 +14,7 @@
 #include <climits>
 #include <cmath>
 #include <cstdio>
+#include <string>
 
 using aidl::android::media::audio::common::AudioDevice;
 using aidl::android::media::audio::common::AudioDeviceType;
@@ -26,6 +26,7 @@ namespace {
 constexpr const char* kCardLink = "/proc/asound/a3y17lte";  // -> "card<N>"
 constexpr const char* kMixerPaths = "/vendor/etc/mixer_paths.xml";
 constexpr const char* kCallPathProperty = "vendor.audio.call_path";
+constexpr const char* kCallVolumeProperty = "vendor.audio.call_volume";
 
 // mixer_paths.xml path for a device, empty for devices this card does not serve.
 std::string pathFor(const AudioDevice& device) {
@@ -108,16 +109,11 @@ void AudioRouter::applyLocked() {
     }
 }
 
-// "Modem Playback Volume" is 0 to 7, 7 = 0 dB. It is in no mixer path, so libaudioroute
-// leaves it alone. The lowest steps are too quiet to be of use.
+// The modem sets the call's level itself (as with stock, where the mixer stays at 0 dB): the
+// radio HAL passes this on, a level from 0 to 5.
 void AudioRouter::applyVoiceVolumeLocked() {
-    if (mCard < 0) return;
-    struct mixer* mixer = mixer_open(mCard);
-    if (mixer == nullptr) return;
-    if (struct mixer_ctl* ctl = mixer_get_ctl_by_name(mixer, "Modem Playback Volume")) {
-        mixer_ctl_set_value(ctl, 0, 2 + static_cast<int>(std::lround(mVoiceVolume * 5)));
-    }
-    mixer_close(mixer);
+    ::android::base::SetProperty(kCallVolumeProperty,
+                                 std::to_string(std::lround(mVoiceVolume * 5)));
 }
 
 void AudioRouter::setCallActive(bool active) {
@@ -131,7 +127,7 @@ void AudioRouter::setCallActive(bool active) {
 void AudioRouter::setVoiceVolume(float volume) {
     std::lock_guard lock(mLock);
     mVoiceVolume = std::min(1.0f, std::max(0.0f, volume));
-    if (mCallActive) applyVoiceVolumeLocked();
+    applyVoiceVolumeLocked();
 }
 
 void AudioRouter::setDevices(bool isInput, const std::vector<AudioDevice>& devices) {

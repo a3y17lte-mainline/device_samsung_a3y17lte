@@ -1,3 +1,3 @@
-# The output a phone call plays on, from the audio HAL to the radio HAL (the modem tunes its
-# echo and noise handling by it)
+# The output a phone call plays on and its volume, from the audio HAL to the radio HAL (the
+# modem tunes its echo and noise handling by the output and sets the level)
 vendor_internal_prop(vendor_call_audio_prop)

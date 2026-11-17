@@ -33,7 +33,7 @@ class AudioRouter {
     // kind of output from a property, for the modem's own echo and noise tuning.
     void setCallActive(bool active);
 
-    // Call volume, 0.0 to 1.0: the level of the modem's downlink in the mixer.
+    // Call volume, 0.0 to 1.0. The modem sets the level: it goes to the radio HAL in a property.
     void setVoiceVolume(float volume);
 
   private:

@@ -31,7 +31,6 @@ cc_binary {
         "liblog",
         "libmedia_helper",
         "libstagefright_foundation",
-        "libtinyalsa",
     ],
     // core-impl/StreamAlsaBase.h includes "alsa/UtilsAlsa.h" from the module root, which
     // libaudioserviceexampleimpl does not export.
