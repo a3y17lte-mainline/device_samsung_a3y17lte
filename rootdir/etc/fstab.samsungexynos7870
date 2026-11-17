@@ -20,5 +20,6 @@ vendor                                     /vendor      erofs   ro              
 /devices/platform/soc@0/13560000.mmc/mmc_host*            auto         auto    defaults                                     voldmanaged=sdcard1:auto,encryptable=userdata
 /devices/platform/soc@0/soc@0:usb@13600000/*            auto         auto    defaults                                     voldmanaged=usb:auto
 
-# zram (2 GB RAM)
-/dev/block/zram0                           none         swap    defaults                                     zramsize=50%
+# zram (2 GB RAM): as large as the RAM. Pages compress about 3.8:1 here (lz4), so a full
+# device costs about a quarter of the RAM; at 50% a 1.3 GB app could not fit
+/dev/block/zram0                           none         swap    defaults                                     zramsize=100%
