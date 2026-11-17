@@ -29,7 +29,8 @@ class AudioRouter {
 
     // A phone call: the modem's downlink joins the mixer and its uplink comes from the codec.
     // The call follows the output devices (earpiece when there are none) and takes the
-    // matching microphone unless a capture stream has chosen one.
+    // matching microphone unless a capture stream has chosen one. The radio HAL reads the
+    // kind of output from a property, for the modem's own echo and noise tuning.
     void setCallActive(bool active);
 
     // Call volume, 0.0 to 1.0: the level of the modem's downlink in the mixer.
@@ -48,7 +49,7 @@ class AudioRouter {
     audio_route* mRoute = nullptr;
     std::vector<std::string> mOutputPaths;
     std::vector<std::string> mInputPaths;
-    bool mHeadsetOutput = false;
+    std::string mCallOutput = "handset";  // handset, speaker, headset or headphone
     bool mCallActive = false;
     float mVoiceVolume = 1.0f;
 };

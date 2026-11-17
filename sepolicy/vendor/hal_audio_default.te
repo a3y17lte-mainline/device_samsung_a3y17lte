@@ -2,3 +2,6 @@
 allow hal_audio_default proc_asound:dir r_dir_perms;
 allow hal_audio_default proc_asound:file r_file_perms;
 allow hal_audio_default proc_asound:lnk_file read;
+
+# Tells the radio HAL which output a phone call is on
+set_prop(hal_audio_default, vendor_call_audio_prop)

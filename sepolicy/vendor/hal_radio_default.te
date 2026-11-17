@@ -14,3 +14,6 @@ allow hal_radio_default sysfs_net:dir r_dir_perms;
 # kernel may read.
 # allow kernel vendor_modem_data_file:dir search;
 # allow kernel vendor_modem_data_file:{ file lnk_file } { read open getattr };
+
+# The output a phone call is on, from the audio HAL
+get_prop(hal_radio_default, vendor_call_audio_prop)

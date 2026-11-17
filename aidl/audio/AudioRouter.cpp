@@ -5,6 +5,7 @@
 #include "AudioRouter.h"
 
 #include <Log.h>
+#include <android-base/properties.h>
 #include <audio_route/audio_route.h>
 #include <tinyalsa/asoundlib.h>
 
@@ -24,6 +25,7 @@ namespace {
 
 constexpr const char* kCardLink = "/proc/asound/a3y17lte";  // -> "card<N>"
 constexpr const char* kMixerPaths = "/vendor/etc/mixer_paths.xml";
+constexpr const char* kCallPathProperty = "vendor.audio.call_path";
 
 // mixer_paths.xml path for a device, empty for devices this card does not serve.
 std::string pathFor(const AudioDevice& device) {
@@ -94,15 +96,16 @@ void AudioRouter::applyLocked() {
     if (mCallActive) {
         audio_route_apply_path(mRoute, "call");
         if (mOutputPaths.empty()) audio_route_apply_path(mRoute, "earpiece");
-        if (mOutputPaths.empty() || mOutputPaths == std::vector<std::string>{"earpiece"}) {
-            audio_route_apply_path(mRoute, "call-earpiece");
-        }
+        audio_route_apply_path(mRoute, ("call-" + mCallOutput).c_str());
         if (mInputPaths.empty()) {
-            audio_route_apply_path(mRoute, mHeadsetOutput ? "headset-mic" : "call-main-mic");
+            audio_route_apply_path(mRoute, ("call-" + mCallOutput + "-mic").c_str());
         }
     }
     audio_route_update_mixer(mRoute);
-    if (mCallActive) applyVoiceVolumeLocked();
+    if (mCallActive) {
+        applyVoiceVolumeLocked();
+        ::android::base::SetProperty(kCallPathProperty, mCallOutput);
+    }
 }
 
 // "Modem Playback Volume" is 0 to 7, 7 = 0 dB. It is in no mixer path, so libaudioroute
@@ -133,9 +136,29 @@ void AudioRouter::setVoiceVolume(float volume) {
 
 void AudioRouter::setDevices(bool isInput, const std::vector<AudioDevice>& devices) {
     std::vector<std::string> paths;
-    bool headset = false;
+    // With several outputs at once the one at the ear decides
+    int rank = 0;
+    std::string output = "handset";
+    auto consider = [&](int r, const char* name) {
+        if (r > rank) {
+            rank = r;
+            output = name;
+        }
+    };
     for (const auto& device : devices) {
-        headset |= device.type.type == AudioDeviceType::OUT_HEADSET;
+        switch (device.type.type) {
+            case AudioDeviceType::OUT_HEADSET:
+                consider(3, "headset");
+                break;
+            case AudioDeviceType::OUT_HEADPHONE:
+                consider(2, "headphone");
+                break;
+            case AudioDeviceType::OUT_SPEAKER:
+                consider(1, "speaker");
+                break;
+            default:
+                break;
+        }
         if (std::string path = pathFor(device); !path.empty()) {
             paths.push_back(path);
         } else {
@@ -145,7 +168,7 @@ void AudioRouter::setDevices(bool isInput, const std::vector<AudioDevice>& devic
 
     std::lock_guard lock(mLock);
     (isInput ? mInputPaths : mOutputPaths) = std::move(paths);
-    if (!isInput) mHeadsetOutput = headset;
+    if (!isInput) mCallOutput = output;
     applyLocked();
 }
 
